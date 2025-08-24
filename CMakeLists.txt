@@ -34,6 +34,7 @@ include_directories(
 set(SOURCES 
 	src/main.cpp
 	src/Graphics_Manager.cpp
+	src/file_to_string.cpp
 	${IMGUI_DIR}/imgui.cpp
 	${IMGUI_DIR}/imgui_draw.cpp
 	${IMGUI_DIR}/imgui_tables.cpp
