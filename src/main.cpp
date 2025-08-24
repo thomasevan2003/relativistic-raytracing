@@ -2,35 +2,16 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <GLFW/glfw3.h>
-
+#include "Graphics_Manager.hpp"
 
 void run() {
-	if (!glfwInit()) {
-		std::cerr << "Failed to initialize GLFW" << std::endl;
-		return;
+	Graphics_Manager graphics_manager; 
+	graphics_manager.initialize();
+	while (graphics_manager.window_open()) {
+		graphics_manager.start_frame();
+		graphics_manager.end_frame();
 	}
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	GLFWwindow* window = glfwCreateWindow(900, 600, "RelativisticRaytracer", NULL, NULL);
-	
-	if (!window) {
-		glfwTerminate();
-		std::cerr << "Failed to create window" << std::endl;
-		return;
-	}
-	
-	glfwMakeContextCurrent(window);
-	
-	while (!glfwWindowShouldClose(window)) {
-		glClear(GL_COLOR_BUFFER_BIT);
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-	
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	graphics_manager.terminate();
 }
 
 int main() {

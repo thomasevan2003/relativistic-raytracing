@@ -33,6 +33,7 @@ include_directories(
 
 set(SOURCES 
 	src/main.cpp
+	src/Graphics_Manager.cpp
 	${IMGUI_DIR}/imgui.cpp
 	${IMGUI_DIR}/imgui_draw.cpp
 	${IMGUI_DIR}/imgui_tables.cpp
@@ -40,7 +41,7 @@ set(SOURCES
 	${IMGUI_DIR}/imgui_demo.cpp
     ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-	${GLAD_DIR}/src/glad.c
+	${GLAD_DIR}/src/gl.c
 )
 
 add_subdirectory(${GLFW_DIR} glfw_build)
