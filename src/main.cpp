@@ -3,6 +3,9 @@
 #include "Graphics_Manager.hpp"
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <glad/gl.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
 void run() {
 	Graphics_Manager graphics_manager; 
@@ -14,6 +17,7 @@ void run() {
 		ImGui::NewFrame();
 		ImGui::ShowDemoWindow();
 		ImGui::Render();
+		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		graphics_manager.end_frame();
 	}
