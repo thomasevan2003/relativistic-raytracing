@@ -47,8 +47,17 @@ bool Graphics_Manager::window_open() {
 
 void Graphics_Manager::start_frame() {
 	glfwPollEvents();
+	glfwGetFramebufferSize(window, &m_width, &m_height);
 }
 
 void Graphics_Manager::end_frame() {
 	glfwSwapBuffers(window);
+}
+
+int Graphics_Manager::width() {
+	return m_width;
+}
+
+int Graphics_Manager::height() {
+	return m_height;
 }

@@ -15,8 +15,17 @@ void run() {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		ImGui::Begin("Main Window");
-		
+		ImGui::SetNextWindowPos(ImVec2(0,0));
+		ImGui::SetNextWindowSize(ImVec2((float)graphics_manager.width(), (float)graphics_manager.height()));
+		ImGui::Begin("Main Window", NULL, ImGuiWindowFlags_NoTitleBar | 
+										  ImGuiWindowFlags_NoResize | 
+										  ImGuiWindowFlags_NoMove | 
+										  ImGuiWindowFlags_NoScrollbar | 
+										  ImGuiWindowFlags_AlwaysAutoResize | 
+										  ImGuiWindowFlags_NoScrollWithMouse | 
+										  ImGuiWindowFlags_NoBringToFrontOnFocus |
+										  ImGuiWindowFlags_NoNavFocus |
+										  ImGuiWindowFlags_NoCollapse);
 		ImGui::End();
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT);
