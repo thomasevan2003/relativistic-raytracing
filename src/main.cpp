@@ -17,7 +17,9 @@ void run() {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		ImGui::SetNextWindowPos(ImVec2(0,0));
-		ImGui::SetNextWindowSize(ImVec2((float)graphics_manager.width(), (float)graphics_manager.height()));
+		ImGui::SetNextWindowSize(ImVec2(0, (float)graphics_manager.height()));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
 		ImGui::Begin("Main Window", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
 										  ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollWithMouse | 
 										  ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
@@ -26,6 +28,7 @@ void run() {
 																		 ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
 		ImGui::EndChild();
 		ImGui::End();
+		ImGui::PopStyleVar(2);
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
