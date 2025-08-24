@@ -3,6 +3,9 @@
 #include <glad/gl.h>
 #include <cstdlib>
 #include <iostream>
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 void Graphics_Manager::initialize() {
 	if (!glfwInit()) {
@@ -24,9 +27,16 @@ void Graphics_Manager::initialize() {
 		std::cerr << "Failed to initialize OpenGL context" << std::endl;
 		std::exit(-1);
 	}
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init();
 }
 
 void Graphics_Manager::terminate() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
@@ -36,10 +46,9 @@ bool Graphics_Manager::window_open() {
 }
 
 void Graphics_Manager::start_frame() {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glfwPollEvents();
 }
 
 void Graphics_Manager::end_frame() {
 	glfwSwapBuffers(window);
-	glfwPollEvents();
 }
