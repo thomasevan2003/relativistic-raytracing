@@ -54,3 +54,5 @@ target_link_libraries(${PROJECT_NAME}
 	glfw
 	${OPENGL_gl_LIBRARY}
 )
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
