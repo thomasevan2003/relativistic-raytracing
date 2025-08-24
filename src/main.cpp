@@ -10,7 +10,7 @@
 #include "file_to_string.hpp"
 
 void run() {
-	constexpr float vertices[] = { -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f };
+	constexpr float vertices[] = { -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
 	Graphics_Manager graphics_manager; 
 	graphics_manager.initialize();
 	unsigned int VBO;
