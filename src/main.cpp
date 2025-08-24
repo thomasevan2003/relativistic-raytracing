@@ -6,6 +6,7 @@
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#include "build_settings.hpp"
 
 void run() {
 	Graphics_Manager graphics_manager; 
@@ -17,15 +18,13 @@ void run() {
 		ImGui::NewFrame();
 		ImGui::SetNextWindowPos(ImVec2(0,0));
 		ImGui::SetNextWindowSize(ImVec2((float)graphics_manager.width(), (float)graphics_manager.height()));
-		ImGui::Begin("Main Window", NULL, ImGuiWindowFlags_NoTitleBar | 
-										  ImGuiWindowFlags_NoResize | 
-										  ImGuiWindowFlags_NoMove | 
-										  ImGuiWindowFlags_NoScrollbar | 
-										  ImGuiWindowFlags_AlwaysAutoResize | 
-										  ImGuiWindowFlags_NoScrollWithMouse | 
-										  ImGuiWindowFlags_NoBringToFrontOnFocus |
-										  ImGuiWindowFlags_NoNavFocus |
-										  ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("Main Window", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
+										  ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollWithMouse | 
+										  ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
+		ImGui::BeginChild("Controls", ImVec2(CONTROL_BAR_WIDTH,0), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
+																		 ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus | 
+																		 ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
+		ImGui::EndChild();
 		ImGui::End();
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT);

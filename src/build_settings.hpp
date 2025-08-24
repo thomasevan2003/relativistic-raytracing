@@ -1,0 +1,6 @@
+#ifndef BUILD_SETTINGS_HPP
+#define BUILD_SETTINGS_HPP
+
+#define CONTROL_BAR_WIDTH 200
+
+#endif
