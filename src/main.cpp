@@ -8,9 +8,12 @@
 #include <GLFW/glfw3.h>
 #include "build_settings.hpp"
 #include "file_to_string.hpp"
+#include "stb_image.h"
 
 void run() {
 	constexpr float vertices[] = { -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
+	int texture_width, texture_height, nrChannels;
+	unsigned char *texture_data = stbi_load(STARMAP_PATH, &texture_width, &texture_height, &nrChannels, 0); 
 	Graphics_Manager graphics_manager; 
 	graphics_manager.initialize();
 	unsigned int VBO;
@@ -63,6 +66,16 @@ void run() {
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 	glBindVertexArray(VAO);
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+	glTexImage2D(GL_TEXTURE_2D, 0, format, texture_width, texture_height, 0, format, GL_UNSIGNED_BYTE, texture_data);
+	glUniform1i(glGetUniformLocation(shader_program, "starmap"), 0);
+	stbi_image_free(texture_data);
 	while (graphics_manager.window_open()) {
 		graphics_manager.start_frame();
 		ImGui_ImplOpenGL3_NewFrame();
@@ -83,6 +96,8 @@ void run() {
 		ImGui::PopStyleVar(2);
 		ImGui::Render();
 		glViewport(CONTROL_BAR_WIDTH, 0, graphics_manager.width()-CONTROL_BAR_WIDTH, graphics_manager.height());
+		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)(graphics_manager.width()-CONTROL_BAR_WIDTH));
+		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)(graphics_manager.height()));
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

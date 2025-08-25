@@ -35,6 +35,7 @@ set(SOURCES
 	src/main.cpp
 	src/Graphics_Manager.cpp
 	src/file_to_string.cpp
+	src/stb_image.c
 	${IMGUI_DIR}/imgui.cpp
 	${IMGUI_DIR}/imgui_draw.cpp
 	${IMGUI_DIR}/imgui_tables.cpp
