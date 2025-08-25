@@ -9,8 +9,10 @@
 #include "build_settings.hpp"
 #include "create_gpu_program.hpp"
 #include "GUI.hpp"
+#include <algorithm>
 
 void run() {
+	constexpr double PI = 3.14159265358979;
 	double latitude = 0.0;
 	double longitude = 0.0;
 	Graphics_Manager graphics_manager; 
@@ -27,25 +29,17 @@ void run() {
 		if (last_time < 0.0) {
 			dt = 0.0;
 		}
-		if (graphics_manager.key_left()) {
-			longitude -= LONGITUDE_SCROLL_RATE*dt;
-		}
-		if (graphics_manager.key_right()) {
-			longitude += LONGITUDE_SCROLL_RATE*dt;
-		}
-		if (graphics_manager.key_up()) {
-			latitude -= LATITUDE_SCROLL_RATE*dt;
-		}
-		if (graphics_manager.key_down()) {
-			latitude += LATITUDE_SCROLL_RATE*dt;
-		}
+		longitude += graphics_manager.key_left() ? LONGITUDE_SCROLL_RATE*dt : 0.0;
+		longitude += graphics_manager.key_right() ? -LONGITUDE_SCROLL_RATE*dt : 0.0;
+		latitude += graphics_manager.key_up() ? LATITUDE_SCROLL_RATE*dt : 0.0;
+		latitude += graphics_manager.key_down() ? -LATITUDE_SCROLL_RATE*dt : 0.0;
+		latitude = std::clamp(latitude, -PI/2.0, PI/2.0);
 		gui.draw(graphics_manager.width(), graphics_manager.height());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)gui.viewport_width());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)gui.viewport_height());
 		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(FOV_HEIGHT_DEGREES*3.14159265/180.0));
 		glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
 		glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
