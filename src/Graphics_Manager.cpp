@@ -48,6 +48,26 @@ bool Graphics_Manager::window_open() {
 void Graphics_Manager::start_frame() {
 	glfwPollEvents();
 	glfwGetFramebufferSize(window, &m_width, &m_height);
+	m_left = false;
+	m_right = false;
+	m_up = false;
+	m_down = false;
+	int state = glfwGetKey(window, GLFW_KEY_LEFT);
+	if (state == GLFW_PRESS) {
+		m_left = true;
+	}
+	state = glfwGetKey(window, GLFW_KEY_RIGHT);
+	if (state == GLFW_PRESS) {
+		m_right = true;
+	}
+	state = glfwGetKey(window, GLFW_KEY_UP);
+	if (state == GLFW_PRESS) {
+		m_up = true;
+	}
+	state = glfwGetKey(window, GLFW_KEY_DOWN);
+	if (state == GLFW_PRESS) {
+		m_down = true;
+	}
 }
 
 void Graphics_Manager::end_frame() {
@@ -57,7 +77,19 @@ void Graphics_Manager::end_frame() {
 int Graphics_Manager::width() {
 	return m_width;
 }
-
 int Graphics_Manager::height() {
 	return m_height;
+}
+
+bool Graphics_Manager::key_left() {
+	return m_left;
+}
+bool Graphics_Manager::key_right() {
+	return m_right;
+}
+bool Graphics_Manager::key_up() {
+	return m_up;
+}
+bool Graphics_Manager::key_down() {
+	return m_down;
 }

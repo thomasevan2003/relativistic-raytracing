@@ -12,6 +12,8 @@
 
 void run() {
 	constexpr float vertices[] = { -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f };
+	double latitude = 0.0;
+	double longitude = 0.0;
 	int texture_width, texture_height, nrChannels;
 	unsigned char *texture_data = stbi_load(STARMAP_PATH, &texture_width, &texture_height, &nrChannels, 0); 
 	Graphics_Manager graphics_manager; 
@@ -76,8 +78,28 @@ void run() {
 	glTexImage2D(GL_TEXTURE_2D, 0, format, texture_width, texture_height, 0, format, GL_UNSIGNED_BYTE, texture_data);
 	glUniform1i(glGetUniformLocation(shader_program, "starmap"), 0);
 	stbi_image_free(texture_data);
+	double last_time = -1.0;
+	double time = -1.0;
 	while (graphics_manager.window_open()) {
 		graphics_manager.start_frame();
+		last_time = time;
+		time = glfwGetTime();
+		double dt = time - last_time;
+		if (last_time < 0.0) {
+			dt = 0.0;
+		}
+		if (graphics_manager.key_left()) {
+			longitude -= LONGITUDE_SCROLL_RATE*dt;
+		}
+		if (graphics_manager.key_right()) {
+			longitude += LONGITUDE_SCROLL_RATE*dt;
+		}
+		if (graphics_manager.key_up()) {
+			latitude -= LATITUDE_SCROLL_RATE*dt;
+		}
+		if (graphics_manager.key_down()) {
+			latitude += LATITUDE_SCROLL_RATE*dt;
+		}
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -98,6 +120,9 @@ void run() {
 		glViewport(CONTROL_BAR_WIDTH, 0, graphics_manager.width()-CONTROL_BAR_WIDTH, graphics_manager.height());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)(graphics_manager.width()-CONTROL_BAR_WIDTH));
 		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)(graphics_manager.height()));
+		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(FOV_HEIGHT_DEGREES*3.14159265/180.0));
+		glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
+		glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

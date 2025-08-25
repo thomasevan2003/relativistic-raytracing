@@ -9,6 +9,10 @@ class Graphics_Manager {
 		GLFWwindow* window;
 		int m_width;
 		int m_height;
+		bool m_left;
+		bool m_right;
+		bool m_up;
+		bool m_down;
 	public:
 		void initialize();
 		void terminate();
@@ -17,6 +21,10 @@ class Graphics_Manager {
 		void end_frame();
 		int width();
 		int height();
+		bool key_up();
+		bool key_left();
+		bool key_right();
+		bool key_down();
 };
 
 #endif
