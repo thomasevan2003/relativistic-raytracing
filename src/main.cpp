@@ -8,12 +8,14 @@
 #include <GLFW/glfw3.h>
 #include "build_settings.hpp"
 #include "create_gpu_program.hpp"
+#include "GUI.hpp"
 
 void run() {
 	double latitude = 0.0;
 	double longitude = 0.0;
 	Graphics_Manager graphics_manager; 
 	graphics_manager.initialize();
+	GUI gui;
 	unsigned int shader_program = create_gpu_program();
 	double last_time = -1.0;
 	double time = -1.0;
@@ -37,26 +39,9 @@ void run() {
 		if (graphics_manager.key_down()) {
 			latitude += LATITUDE_SCROLL_RATE*dt;
 		}
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-		ImGui::SetNextWindowPos(ImVec2(0,0));
-		ImGui::SetNextWindowSize(ImVec2(0, (float)graphics_manager.height()));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
-		ImGui::Begin("Main Window", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
-										  ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollWithMouse | 
-										  ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
-		ImGui::BeginChild("Controls", ImVec2(CONTROL_BAR_WIDTH,0), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
-																		 ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus | 
-																		 ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
-		ImGui::EndChild();
-		ImGui::End();
-		ImGui::PopStyleVar(2);
-		ImGui::Render();
-		glViewport(CONTROL_BAR_WIDTH, 0, graphics_manager.width()-CONTROL_BAR_WIDTH, graphics_manager.height());
-		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)(graphics_manager.width()-CONTROL_BAR_WIDTH));
-		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)(graphics_manager.height()));
+		gui.draw(graphics_manager.width(), graphics_manager.height());
+		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)gui.viewport_width());
+		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)gui.viewport_height());
 		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(FOV_HEIGHT_DEGREES*3.14159265/180.0));
 		glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
 		glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
