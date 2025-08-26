@@ -35,6 +35,7 @@ void run() {
 		latitude += graphics_manager.key_down() ? -LATITUDE_SCROLL_RATE*dt : 0.0;
 		latitude = std::clamp(latitude, -PI/2.0, PI/2.0);
 		gui.draw(graphics_manager.width(), graphics_manager.height());
+		glUniform1f(glGetUniformLocation(shader_program, "viewportX"), (float)gui.viewport_x());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)gui.viewport_width());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)gui.viewport_height());
 		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(gui.fov()*3.14159265/180.0));

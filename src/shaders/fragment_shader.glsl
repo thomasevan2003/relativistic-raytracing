@@ -1,5 +1,6 @@
 #version 330 core
 out vec4 FragColor;
+uniform float viewportX;
 uniform float viewportWidth;
 uniform float viewportHeight;
 uniform float fovHeight;
@@ -7,7 +8,7 @@ uniform float latitude;
 uniform float longitude;
 uniform sampler2D starmap;
 void main() {
-	vec2 coords = vec2(2.0*gl_FragCoord.x/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight); // screen space coords from -1.0 to 1.0
+	vec2 coords = vec2(2.0*(gl_FragCoord.x-viewportX)/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight); // screen space coords from -1.0 to 1.0
 	float aspect = viewportWidth / viewportHeight;
 	float scaleHeight = tan(fovHeight * 0.5); // scaling factor based on field of view: height of point (0,1) in screen space divided by distance from camera to screen
 	float y = coords.y*scaleHeight;

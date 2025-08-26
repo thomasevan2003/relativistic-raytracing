@@ -44,6 +44,9 @@ int GUI::viewport_width() {
 int GUI::viewport_height() {
 	return m_viewport_height;
 }
+int GUI::viewport_x() {
+	return CONTROL_BAR_WIDTH;
+}
 float GUI::fov() {
 	return m_fov;
 }

@@ -8,6 +8,7 @@ class GUI {
 		void draw(int width, int height);
 		int viewport_width();
 		int viewport_height();
+		int viewport_x();
 		float fov();
 		
 	private:
