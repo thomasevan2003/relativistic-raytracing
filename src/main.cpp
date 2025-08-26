@@ -37,7 +37,7 @@ void run() {
 		gui.draw(graphics_manager.width(), graphics_manager.height());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)gui.viewport_width());
 		glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)gui.viewport_height());
-		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(FOV_HEIGHT_DEGREES*3.14159265/180.0));
+		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(gui.fov()*3.14159265/180.0));
 		glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
 		glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

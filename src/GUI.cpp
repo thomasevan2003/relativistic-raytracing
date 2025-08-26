@@ -8,6 +8,10 @@
 #include <GLFW/glfw3.h>
 #include "build_settings.hpp"
 
+GUI::GUI() {
+	m_fov = FOV_HEIGHT_DEGREES_START;
+}
+
 void GUI::draw(int width, int height) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -22,6 +26,9 @@ void GUI::draw(int width, int height) {
 	ImGui::BeginChild("Controls", ImVec2(CONTROL_BAR_WIDTH,0), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
 																	 ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus | 
 																	 ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
+	ImGui::Text("Field of View (deg)");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH);
+	ImGui::SliderFloat("##hidden", &m_fov, 0.0, 180.0);
 	ImGui::EndChild();
 	ImGui::End();
 	ImGui::PopStyleVar(2);
@@ -36,4 +43,7 @@ int GUI::viewport_width() {
 }
 int GUI::viewport_height() {
 	return m_viewport_height;
+}
+float GUI::fov() {
+	return m_fov;
 }

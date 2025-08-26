@@ -6,6 +6,7 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include "build_settings.hpp"
 
 void Graphics_Manager::initialize() {
 	if (!glfwInit()) {
@@ -15,7 +16,7 @@ void Graphics_Manager::initialize() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	window = glfwCreateWindow(1100, 900, "RelativisticRaytracer", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH_START, WINDOW_HEIGHT_START, "RelativisticRaytracer", NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		std::cerr << "Failed to create window" << std::endl;
