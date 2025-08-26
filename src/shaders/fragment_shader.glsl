@@ -24,4 +24,7 @@ void main() {
 	float theta = asin(ray.y);
 	float phi = atan(ray.x, -ray.z);
 	FragColor = texture(starmap, vec2(phi/(2.0*3.14159265) + 0.5, theta/3.14159265 + 0.5));
+	if (x*x + y*y < 0.01) {
+		FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	}
 }
