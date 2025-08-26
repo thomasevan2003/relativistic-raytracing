@@ -13,8 +13,8 @@
 
 void run() {
 	constexpr double PI = 3.14159265358979;
-	double latitude = 0.0;
-	double longitude = 0.0;
+	double latitude = LATITUDE_START;
+	double longitude = LONGITUDE_START;
 	Graphics_Manager graphics_manager; 
 	graphics_manager.initialize();
 	GUI gui;
