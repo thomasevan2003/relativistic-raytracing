@@ -15,7 +15,7 @@ void Graphics_Manager::initialize() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	window = glfwCreateWindow(900, 600, "RelativisticRaytracer", NULL, NULL);
+	window = glfwCreateWindow(1100, 900, "RelativisticRaytracer", NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		std::cerr << "Failed to create window" << std::endl;

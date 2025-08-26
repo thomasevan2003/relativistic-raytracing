@@ -7,6 +7,17 @@ uniform float latitude;
 uniform float longitude;
 uniform sampler2D starmap;
 void main() {
-	vec2 coords = vec2(gl_FragCoord.x/viewportWidth, 1.0 - gl_FragCoord.y/viewportHeight);
-	FragColor = texture(starmap, coords + vec2(longitude, latitude));
+	// coords: y from -1.0 to 1.0, x scaled by aspect ratio
+	vec2 coords = vec2(2.0*gl_FragCoord.x/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight);
+	float aspect = viewportWidth / viewportHeight;
+	float scaleHeight = tan(fovHeight * 0.5);
+	float y = coords.y*scaleHeight;
+	float x = coords.x*aspect*scaleHeight;
+	vec3 ray = normalize(vec3(x,y,-1.0));
+	mat3 rotX = mat3(1,0,0, 0,cos(latitude),-sin(latitude), 0,sin(latitude),cos(latitude));
+	mat3 rotY = mat3(cos(longitude),0,sin(longitude), 0,1,0, -sin(longitude),0,cos(longitude));
+	ray = rotY*rotX*ray;
+	float theta = asin(ray.y);
+	float phi = atan(ray.x, -ray.z);
+	FragColor = texture(starmap, vec2(phi/(2.0*3.14159265) + 0.5, theta/3.14159265 + 0.5));
 }
