@@ -36,10 +36,10 @@ void main() {
 	float rdot = (x*xdot+y*ydot+z*zdot)/r;
 	float thetadot = -(x*x*zdot-x*z*xdot+y*y*zdot-y*z*ydot)/(r*r*sqrt(x*x+y*y));
 	float phidot = (x*ydot-y*xdot)/(x*x+y*y);
-	const float dlambda = 0.2;
 	const float R_s = 1.0;
 	bool captured_by_event_horizon = false;
-	for (int i = 0; i < 500; ++i) {
+	for (int i = 0; i < 400; ++i) {
+		float dlambda = 0.01*r;
 		t += tdot*dlambda;
 		r += rdot*dlambda;
 		if (r < R_s) {
