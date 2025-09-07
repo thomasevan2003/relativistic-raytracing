@@ -9,6 +9,7 @@ class GUI {
 		int viewport_width();
 		int viewport_height();
 		int viewport_x();
+		void set_fps(double fps);
 		float fov();
 		
 	private:
@@ -16,6 +17,9 @@ class GUI {
 		int m_viewport_width;
 		int m_viewport_height;
 		float m_fov;
+		double m_fps;
+		double m_last_fps_time;
+		int m_fps_frames;
 	
 };
 

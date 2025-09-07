@@ -9,6 +9,7 @@
 #define LONGITUDE_START 1.45937
 #define LONGITUDE_SCROLL_RATE 0.7
 #define LATITUDE_SCROLL_RATE 0.7
+#define FPS_REFRESH_TIME 1.0
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"

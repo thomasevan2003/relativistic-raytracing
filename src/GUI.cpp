@@ -10,6 +10,9 @@
 
 GUI::GUI() {
 	m_fov = FOV_HEIGHT_DEGREES_START;
+	m_fps = 0.0;
+	m_last_fps_time = glfwGetTime();
+	m_fps_frames = 0;
 }
 
 void GUI::draw(int width, int height) {
@@ -29,6 +32,14 @@ void GUI::draw(int width, int height) {
 	ImGui::Text("Field of View (deg)");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH);
 	ImGui::SliderFloat("##hidden", &m_fov, 0.0, 180.0);
+	double time = glfwGetTime();
+	double fps_time = time - m_last_fps_time;
+	if (fps_time > FPS_REFRESH_TIME) {
+		m_last_fps_time = time;
+		m_fps = m_fps_frames/fps_time;
+		m_fps_frames = 0;
+	}
+	ImGui::Text("%.1f fps", m_fps);
 	ImGui::EndChild();
 	ImGui::End();
 	ImGui::PopStyleVar(2);
@@ -36,6 +47,7 @@ void GUI::draw(int width, int height) {
 	glViewport(CONTROL_BAR_WIDTH, 0, width-CONTROL_BAR_WIDTH, height);
 	m_viewport_width = width-CONTROL_BAR_WIDTH;
 	m_viewport_height = height;
+	++m_fps_frames; 
 }
 
 int GUI::viewport_width() {
@@ -49,4 +61,8 @@ int GUI::viewport_x() {
 }
 float GUI::fov() {
 	return m_fov;
+}
+
+void GUI::set_fps(double fps) {
+	m_fps = fps;
 }
