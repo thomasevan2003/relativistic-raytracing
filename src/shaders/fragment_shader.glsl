@@ -53,6 +53,9 @@ void main() {
 		rdot += (R_s*(R_s-r)/(2*r*r*r)*tdot*tdot - R_s/(2*r*(R_s-r))*rdot*rdot - (R_s-r)*thetadot*thetadot - sin(theta)*sin(theta)*(R_s-r)*phidot*phidot)*dlambda;
 		thetadot += (-2/r*rdot*thetadot + sin(2*theta)/2*phidot*phidot)*dlambda;
 		phidot += (-2/r*rdot*phidot - 2*cos(theta)/sin(theta)*thetadot*phidot)*dlambda;
+		//if (r > r_camera && rdot > 0.0) {
+		//	break;
+		//}
 	}
 	vec3 d_final = vec3(sin(theta)*cos(phi)*rdot + r*cos(theta)*cos(phi)*thetadot - r*sin(theta)*sin(phi)*phidot, 
 	                    sin(theta)*sin(phi)*rdot + r*cos(theta)*sin(phi)*thetadot + r*sin(theta)*cos(phi)*phidot,
