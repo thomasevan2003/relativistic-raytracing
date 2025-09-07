@@ -11,8 +11,10 @@
 GUI::GUI() {
 	m_fov = FOV_HEIGHT_DEGREES_START;
 	m_fps = 0.0;
+	m_R_s = 1.0;
 	m_last_fps_time = glfwGetTime();
 	m_fps_frames = 0;
+	m_r_camera = 50.0;
 	m_vsync = VSYNC_START;
 	glfwSwapInterval(m_vsync);
 }
@@ -33,7 +35,11 @@ void GUI::draw(int width, int height) {
 																	 ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
 	ImGui::Text("Field of View (deg)");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH);
-	ImGui::SliderFloat("##hidden", &m_fov, 0.0, 180.0);
+	ImGui::SliderFloat("##0", &m_fov, 0.0, 180.0);
+	ImGui::Text("R_s");
+	ImGui::SliderFloat("##1", &m_R_s, 0.0, MAX_R_S);
+	ImGui::Text("Distance (x R_s)");
+	ImGui::SliderFloat("##2", &m_r_camera, 0.0, MAX_R_CAMERA);
 	bool vsync_last = m_vsync;
 	ImGui::Checkbox("vsync", &m_vsync);
 	if (m_vsync != vsync_last) {
@@ -69,7 +75,14 @@ int GUI::viewport_x() {
 float GUI::fov() {
 	return m_fov;
 }
+float GUI::R_s() {
+	return m_R_s;
+}
+float GUI::r_camera() {
+	return m_r_camera;
+}
 
 void GUI::set_fps(double fps) {
 	m_fps = fps;
 }
+

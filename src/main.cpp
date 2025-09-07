@@ -41,6 +41,8 @@ void run() {
 		glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(gui.fov()*3.14159265/180.0));
 		glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
 		glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
+		glUniform1f(glGetUniformLocation(shader_program, "R_s"), (float)gui.R_s());
+		glUniform1f(glGetUniformLocation(shader_program, "r_camera"), (float)gui.r_camera());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

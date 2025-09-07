@@ -11,6 +11,8 @@
 #define LATITUDE_SCROLL_RATE 0.7
 #define VSYNC_START false
 #define FPS_REFRESH_TIME 1.0
+#define MAX_R_S 5.0
+#define MAX_R_CAMERA 100.0
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"
