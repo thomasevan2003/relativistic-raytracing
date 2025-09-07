@@ -43,7 +43,7 @@ which has the following nonzero elements for the Schwarzschild metric:
 
 ![11](./equations/11.png)
 
-Using the Christoffel symbol, the governing differential equation for a geodesic is
+Using the Christoffel symbol, the governing differential equation for a geodesic in the Schwarzschild metric is
 
 ![12](./equations/12.png)
 
