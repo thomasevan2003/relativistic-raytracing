@@ -28,32 +28,53 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui::NewFrame();
 	ImGui::SetNextWindowPos(ImVec2(0,0));
 	ImGui::SetNextWindowSize(ImVec2(0, (float)height));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(UI_PADDING,UI_PADDING));
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2,2));
 	ImGui::Begin("Main Window", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
 									  ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollWithMouse | 
 									  ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
-	ImGui::BeginChild("Controls", ImVec2(CONTROL_BAR_WIDTH,0), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0));		
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
+	ImGui::BeginChild("Controls", ImVec2(CONTROL_BAR_WIDTH-2*UI_PADDING,0), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
 																	 ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBringToFrontOnFocus | 
 																	 ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoCollapse);
 	ImGui::Text("Field of View (deg)");
-	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::SliderFloat("##0", &m_fov, 0.0, 180.0);
+	ImGui::PopStyleVar(1);
 	ImGui::Text("R_s");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##1", &m_R_s, 0.0, MAX_R_S);
+	ImGui::PopStyleVar(1);
 	ImGui::Text("Distance (x R_s)");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##2", &m_r_camera, 0.0, MAX_R_CAMERA);
+	ImGui::PopStyleVar(1);
 	ImGui::Text("log10(timestep_scale)");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##3", &m_log10_timestep_scale, MIN_LOG10_TIMESTEP_SCALE, MAX_LOG10_TIMESTEP_SCALE);
+	ImGui::PopStyleVar(1);
 	ImGui::Text("Max steps per geodesic");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderInt("##4", &m_maxsteps, 0, MAX_MAXSTEPS);
+	ImGui::PopStyleVar(1);
 	bool vsync_last = m_vsync;
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Checkbox("vsync", &m_vsync);
+	ImGui::PopStyleVar(1);
 	if (m_vsync != vsync_last) {
 		glfwSwapInterval(m_vsync ? 1 : 0);
 	}
 	ImGui::Text("longitude: %.1f deg", longitude*180.0/3.14159265);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Text("latitude:  %.1f deg", latitude*180.0/3.14159265);
+	ImGui::PopStyleVar(1);
 	double time = glfwGetTime();
 	double fps_time = time - m_last_fps_time;
 	if (fps_time > FPS_REFRESH_TIME) {
@@ -61,8 +82,11 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 		m_fps = m_fps_frames/fps_time;
 		m_fps_frames = 0;
 	}
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Text("%.1f fps", m_fps);
+	ImGui::PopStyleVar(1);
 	ImGui::EndChild();
+	ImGui::PopStyleVar(2);
 	ImGui::End();
 	ImGui::PopStyleVar(2);
 	ImGui::Render();

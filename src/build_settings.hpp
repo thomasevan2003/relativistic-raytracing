@@ -17,8 +17,10 @@
 #define MIN_LOG10_TIMESTEP_SCALE -4.0
 #define MAX_LOG10_TIMESTEP_SCALE 1.0
 #define INITIAL_LOG10_TIMESTEP_SCALE -2.0
-#define MAX_MAXSTEPS 3000
+#define MAX_MAXSTEPS 10000
 #define INITIAL_MAXSTEPS 1000
+#define UI_ITEM_SPACING 10
+#define UI_PADDING 10
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"
