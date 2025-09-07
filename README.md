@@ -88,6 +88,9 @@ After integrating, it is also necessary to make the reverse conversion from Schw
 ![24](./equations/24.png)
 
 
+![25](./equations/25.png)
+
+
 The full solution process is as follows:  
 1. Compute initial 4-velocity in Cartesian coordinates using 3-velocity from screenspace position.
 2. Convert initial 4-velocity from Cartesian coordinates to Schwarzschild coordinates.

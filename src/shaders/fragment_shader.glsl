@@ -36,11 +36,17 @@ void main() {
 	float rdot = (x*xdot+y*ydot+z*zdot)/r;
 	float thetadot = -(x*x*zdot-x*z*xdot+y*y*zdot-y*z*ydot)/(r*r*sqrt(x*x+y*y));
 	float phidot = (x*ydot-y*xdot)/(x*x+y*y);
-	// integration loop here
-	d.xyz = vec3(sin(theta)*cos(phi)*rdot + r*cos(theta)*cos(phi)*thetadot - r*sin(theta)*sin(phi)*phidot, 
-	             sin(theta)*sin(phi)*rdot + r*cos(theta)*sin(phi)*thetadot + r*sin(theta)*cos(phi)*phidot,
-				 cos(theta)*rdot - r*sin(theta)*thetadot);
-	float theta_starmap = asin(d.y);
-	float phi_starmap = atan(d.x, -d.z);	
+	const float dlambda = 0.1;
+	for (int i = 0; i < 1000; ++i) {
+		t = t + tdot*dlambda;
+		r = r + rdot*dlambda;
+		theta = theta + thetadot*dlambda;
+		phi = phi + phidot*dlambda;
+	}
+	vec3 d_final = vec3(sin(theta)*cos(phi)*rdot + r*cos(theta)*cos(phi)*thetadot - r*sin(theta)*sin(phi)*phidot, 
+	                    sin(theta)*sin(phi)*rdot + r*cos(theta)*sin(phi)*thetadot + r*sin(theta)*cos(phi)*phidot,
+				        cos(theta)*rdot - r*sin(theta)*thetadot);
+	float theta_starmap = asin(d_final.y);
+	float phi_starmap = atan(d_final.x, -d_final.z);	
 	FragColor = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
 }
