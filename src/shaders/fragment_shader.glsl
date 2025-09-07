@@ -25,7 +25,7 @@ void main() {
 	vec3 x_cartesian = vec3(-20.0*d_camera); // starting position at time 0, facing the black hole
 	float r = length(x_cartesian);
 	vec4 x = vec4(0.0, r, acos(x_cartesian.z/r), atan(x_cartesian.y,x_cartesian.x));
-	vec4 dx_dlambda = vec4(length(d),d);
+	vec4 dx_dlambda = vec4(dx_dlambda_cartesian.x);
 	// integration loop here
 	d = dx_dlambda.yzw;
 	float theta_starmap = asin(d.y);
