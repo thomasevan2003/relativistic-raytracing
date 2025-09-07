@@ -20,6 +20,7 @@ class GUI {
 		double m_fps;
 		double m_last_fps_time;
 		int m_fps_frames;
+		bool m_vsync;
 	
 };
 

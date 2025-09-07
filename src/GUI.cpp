@@ -13,6 +13,7 @@ GUI::GUI() {
 	m_fps = 0.0;
 	m_last_fps_time = glfwGetTime();
 	m_fps_frames = 0;
+	m_vsync = false;
 }
 
 void GUI::draw(int width, int height) {
@@ -32,6 +33,11 @@ void GUI::draw(int width, int height) {
 	ImGui::Text("Field of View (deg)");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH);
 	ImGui::SliderFloat("##hidden", &m_fov, 0.0, 180.0);
+	bool vsync_last = m_vsync;
+	ImGui::Checkbox("vsync", &m_vsync);
+	if (m_vsync != vsync_last) {
+		glfwSwapInterval(m_vsync ? 1 : 0);
+	}
 	double time = glfwGetTime();
 	double fps_time = time - m_last_fps_time;
 	if (fps_time > FPS_REFRESH_TIME) {
