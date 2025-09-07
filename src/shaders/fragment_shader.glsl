@@ -23,9 +23,9 @@ void main() {
 	d = rotY*rotX*d;
 	vec3 d_camera = rotY*rotX*vec3(0.0,0.0,-1.0);
 	float t = 0.0;
-	float x = -20.0*d_camera.x;
-	float y = -20.0*d_camera.y;
-	float z = -20.0*d_camera.z;
+	float x = -50.0*d_camera.x;
+	float y = -50.0*d_camera.y;
+	float z = -50.0*d_camera.z;
 	float r = sqrt(x*x+y*y+z*z);
 	float theta = acos(z/r);
 	float phi = atan(y,x);
@@ -36,17 +36,30 @@ void main() {
 	float rdot = (x*xdot+y*ydot+z*zdot)/r;
 	float thetadot = -(x*x*zdot-x*z*xdot+y*y*zdot-y*z*ydot)/(r*r*sqrt(x*x+y*y));
 	float phidot = (x*ydot-y*xdot)/(x*x+y*y);
-	const float dlambda = 0.1;
-	for (int i = 0; i < 1000; ++i) {
-		t = t + tdot*dlambda;
-		r = r + rdot*dlambda;
-		theta = theta + thetadot*dlambda;
-		phi = phi + phidot*dlambda;
+	const float dlambda = 0.2;
+	const float R_s = 1.0;
+	bool captured_by_event_horizon = false;
+	for (int i = 0; i < 500; ++i) {
+		t += tdot*dlambda;
+		r += rdot*dlambda;
+		if (r < R_s) {
+			captured_by_event_horizon = true;
+			break;
+		}
+		theta += thetadot*dlambda;
+		phi += phidot*dlambda;
+		tdot += (R_s/(r*(R_s - r))*tdot*rdot)*dlambda;
+		rdot += (R_s*(R_s-r)/(2*r*r*r)*tdot*tdot - R_s/(2*r*(R_s-r))*rdot*rdot - (R_s-r)*thetadot*thetadot - sin(theta)*sin(theta)*(R_s-r)*phidot*phidot)*dlambda;
+		thetadot += (-2/r*rdot*thetadot + sin(2*theta)/2*phidot*phidot)*dlambda;
+		phidot += (-2/r*rdot*phidot - 2*cos(theta)/sin(theta)*thetadot*phidot)*dlambda;
 	}
 	vec3 d_final = vec3(sin(theta)*cos(phi)*rdot + r*cos(theta)*cos(phi)*thetadot - r*sin(theta)*sin(phi)*phidot, 
 	                    sin(theta)*sin(phi)*rdot + r*cos(theta)*sin(phi)*thetadot + r*sin(theta)*cos(phi)*phidot,
 				        cos(theta)*rdot - r*sin(theta)*thetadot);
 	float theta_starmap = asin(d_final.y);
 	float phi_starmap = atan(d_final.x, -d_final.z);	
-	FragColor = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
+	FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	if (!captured_by_event_horizon) {
+		FragColor = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
+	}
 }
