@@ -5,7 +5,7 @@ class GUI {
 	public:
 		
 		GUI();
-		void draw(int width, int height);
+		void draw(int width, int height, double latitude, double longitude);
 		int viewport_width();
 		int viewport_height();
 		int viewport_x();

@@ -19,7 +19,7 @@ GUI::GUI() {
 	glfwSwapInterval(m_vsync);
 }
 
-void GUI::draw(int width, int height) {
+void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -45,6 +45,8 @@ void GUI::draw(int width, int height) {
 	if (m_vsync != vsync_last) {
 		glfwSwapInterval(m_vsync ? 1 : 0);
 	}
+	ImGui::Text("longitude: %.1f deg", longitude*180.0/3.14159265);
+	ImGui::Text("latitude:  %.1f deg", latitude*180.0/3.14159265);
 	double time = glfwGetTime();
 	double fps_time = time - m_last_fps_time;
 	if (fps_time > FPS_REFRESH_TIME) {
