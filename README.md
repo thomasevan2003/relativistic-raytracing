@@ -4,9 +4,9 @@ Shader visualization of gravitational lensing around a black hole, written in C+
 ## Numerical Integration of a Geodesic
 
 The Schwarzschild metric in coordinates $(t,r,\theta,\phi)$ with $c=1$ is
-$$
+$
 ds^2=-\left(1-\frac{R_s}{r}\right)dt^2+\left(1-\frac{R_s}{r}\right)^{-1}dr^2+r^2 d\theta^2+r^2\sin^2 \theta d\phi^2
-$$
+$
 which gives the following metric:
 $$
 g_{\mu\nu}=\begin{bmatrix}-\left(1-\frac{R_s}{r}\right)&0&0&0\\0&\left(1-\frac{R_s}{r}\right)^{-1}&0&0\\0&0&r^2&0\\0&0&0&r^2\sin^2\theta\end{bmatrix}
