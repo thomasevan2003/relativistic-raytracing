@@ -71,12 +71,29 @@ Converting from Cartesian $x_\mathrm{c}=(t,x,y,z)$ back to Schwarzschild coordin
 
 ![19](./equations/19.png)
 
+After integrating, it is also necessary to make the reverse conversion from Schwarzschild coordinates to Cartesian coordinates:
+
+![20](./equations/20.png)
+
+
+![21](./equations/21.png)
+
+
+![22](./equations/22.png)
+
+
+![23](./equations/23.png)
+
+
+![24](./equations/24.png)
+
 
 The full solution process is as follows:  
 1. Compute initial 4-velocity in Cartesian coordinates using 3-velocity from screenspace position.
 2. Convert initial 4-velocity from Cartesian coordinates to Schwarzschild coordinates.
 3. Integrate geodesic numerically until exit condition.
-4. Project final 3-velocity onto spherical starmap.
+4. Convert final 4-velocity from Schwarzschild coordinates to Cartesian coordinates.
+5. Project final 3-velocity onto spherical starmap.
 
 ## Dependencies
 - Dear ImGui
