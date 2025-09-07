@@ -13,6 +13,12 @@
 #define FPS_REFRESH_TIME 1.0
 #define MAX_R_S 5.0
 #define MAX_R_CAMERA 100.0
+#define INITIAL_R_CAMERA 50.0
+#define MIN_LOG10_TIMESTEP_SCALE -4.0
+#define MAX_LOG10_TIMESTEP_SCALE 1.0
+#define INITIAL_LOG10_TIMESTEP_SCALE -2.0
+#define MAX_MAXSTEPS 3000
+#define INITIAL_MAXSTEPS 1000
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"

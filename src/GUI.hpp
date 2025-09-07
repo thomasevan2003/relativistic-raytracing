@@ -13,6 +13,8 @@ class GUI {
 		float fov();
 		float R_s();
 		float r_camera();
+		float timestep_scale();
+		int maxsteps();
 		
 	private:
 	
@@ -25,6 +27,8 @@ class GUI {
 		bool m_vsync;
 		float m_R_s;
 		float m_r_camera;
+		float m_log10_timestep_scale;
+		int m_maxsteps;
 	
 };
 

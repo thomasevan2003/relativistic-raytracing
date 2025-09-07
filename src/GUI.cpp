@@ -7,6 +7,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include "build_settings.hpp"
+#include <cmath>
 
 GUI::GUI() {
 	m_fov = FOV_HEIGHT_DEGREES_START;
@@ -14,7 +15,9 @@ GUI::GUI() {
 	m_R_s = 1.0;
 	m_last_fps_time = glfwGetTime();
 	m_fps_frames = 0;
-	m_r_camera = 50.0;
+	m_r_camera = INITIAL_R_CAMERA;
+	m_log10_timestep_scale = INITIAL_LOG10_TIMESTEP_SCALE;
+	m_maxsteps = INITIAL_MAXSTEPS;
 	m_vsync = VSYNC_START;
 	glfwSwapInterval(m_vsync);
 }
@@ -40,6 +43,10 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui::SliderFloat("##1", &m_R_s, 0.0, MAX_R_S);
 	ImGui::Text("Distance (x R_s)");
 	ImGui::SliderFloat("##2", &m_r_camera, 0.0, MAX_R_CAMERA);
+	ImGui::Text("log10(timestep_scale)");
+	ImGui::SliderFloat("##3", &m_log10_timestep_scale, MIN_LOG10_TIMESTEP_SCALE, MAX_LOG10_TIMESTEP_SCALE);
+	ImGui::Text("Max steps per geodesic");
+	ImGui::SliderInt("##4", &m_maxsteps, 0, MAX_MAXSTEPS);
 	bool vsync_last = m_vsync;
 	ImGui::Checkbox("vsync", &m_vsync);
 	if (m_vsync != vsync_last) {
@@ -82,6 +89,12 @@ float GUI::R_s() {
 }
 float GUI::r_camera() {
 	return m_r_camera;
+}
+float GUI::timestep_scale() {
+	return pow(10.0f, (float)m_log10_timestep_scale);
+}
+int GUI::maxsteps() {
+	return m_maxsteps;
 }
 
 void GUI::set_fps(double fps) {

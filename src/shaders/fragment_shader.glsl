@@ -8,6 +8,8 @@ uniform float latitude;
 uniform float longitude;
 uniform float R_s;
 uniform float r_camera;
+uniform float timestep_scale;
+uniform int maxsteps;
 uniform sampler2D starmap;
 void main() {
 	vec2 screen_coords = vec2(2.0*(gl_FragCoord.x-viewportX)/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight); // screen space coords from -1.0 to 1.0
@@ -39,8 +41,8 @@ void main() {
 	float thetadot = -(x*x*zdot-x*z*xdot+y*y*zdot-y*z*ydot)/(r*r*sqrt(x*x+y*y));
 	float phidot = (x*ydot-y*xdot)/(x*x+y*y);
 	bool captured_by_event_horizon = false;
-	for (int i = 0; i < 1000; ++i) {
-		float dlambda = 0.01*r;
+	for (int i = 0; i < maxsteps; ++i) {
+		float dlambda = timestep_scale*r;
 		t += tdot*dlambda;
 		r += rdot*dlambda;
 		if (r < R_s) {
