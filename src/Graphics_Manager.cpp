@@ -28,7 +28,6 @@ void Graphics_Manager::initialize() {
 		std::cerr << "Failed to initialize OpenGL context" << std::endl;
 		std::exit(-1);
 	}
-	glfwSwapInterval(0);
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);

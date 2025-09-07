@@ -13,7 +13,8 @@ GUI::GUI() {
 	m_fps = 0.0;
 	m_last_fps_time = glfwGetTime();
 	m_fps_frames = 0;
-	m_vsync = false;
+	m_vsync = VSYNC_START;
+	glfwSwapInterval(m_vsync);
 }
 
 void GUI::draw(int width, int height) {
