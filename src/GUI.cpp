@@ -58,7 +58,7 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##3", &m_log10_timestep_scale, MIN_LOG10_TIMESTEP_SCALE, MAX_LOG10_TIMESTEP_SCALE);
 	ImGui::PopStyleVar(1);
-	ImGui::Text("Max steps per geodesic");
+	ImGui::Text("Max steps per photon");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderInt("##4", &m_maxsteps, 0, MAX_MAXSTEPS);

@@ -47,18 +47,18 @@ Using the Christoffel symbol, the governing differential equation for a geodesic
 
 ![12](./equations/12.png)
 
-with the null condition for a photon:
 
 ![13](./equations/13.png)
 
-The null condition will be applied at the beginning of a geodesic based on the direction associated with a given pixel: $(d_x, d_y, d_z)$. The camera is in nearly flat space, so the null condition in $(t,x,y,z)$ coordinates simplifies to
+with the null condition for a photon:
 
 ![14](./equations/14.png)
 
-Converting from Cartesian $x_\mathrm{c}=(t,x,y,z)$ back to Schwarzschild coordinates $x=(t,r,\theta,\phi)$,
+The null condition will be applied at the beginning of a geodesic based on the direction associated with a given pixel: $(d_x, d_y, d_z)$. The camera is in nearly flat space, so the null condition in $(t,x,y,z)$ coordinates simplifies to
 
 ![15](./equations/15.png)
 
+Converting from Cartesian $x_\mathrm{c}=(t,x,y,z)$ back to Schwarzschild coordinates $x=(t,r,\theta,\phi)$,
 
 ![16](./equations/16.png)
 
@@ -71,10 +71,10 @@ Converting from Cartesian $x_\mathrm{c}=(t,x,y,z)$ back to Schwarzschild coordin
 
 ![19](./equations/19.png)
 
-After integrating, it is also necessary to make the reverse conversion from Schwarzschild coordinates to Cartesian coordinates:
 
 ![20](./equations/20.png)
 
+After integrating, it is also necessary to make the reverse conversion from Schwarzschild coordinates to Cartesian coordinates:
 
 ![21](./equations/21.png)
 
@@ -89,6 +89,9 @@ After integrating, it is also necessary to make the reverse conversion from Schw
 
 
 ![25](./equations/25.png)
+
+
+![26](./equations/26.png)
 
 
 The full solution process is as follows:  
