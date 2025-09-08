@@ -109,3 +109,7 @@ The full solution process is as follows:
 
 ## Resources
 The starmap used in this visualization is the Tycho Catalog Skymap Version 2.0, obtained from NASA/Goddard Space Flight Center Scientific Visualization Studio (https://svs.gsfc.nasa.gov/3572).
+
+## References
+1. Sean M. Caroll. (2003). Spacetime and Geometry: an Introduction to General Relativity (1st edition). Cambridge University Press.  
+2. Mark Newman. (2012). Computational Physics. CreateSpace Independent Publishing Platform.
