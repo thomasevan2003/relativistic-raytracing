@@ -11,6 +11,31 @@ uniform float r_camera;
 uniform float timestep_scale;
 uniform int maxsteps;
 uniform sampler2D starmap;
+
+struct State {
+	float t;
+	float r;
+	float theta;
+	float phi;
+	float tdot;
+	float rdot;
+	float thetadot;
+	float phidot;
+};
+
+State f(State X) {
+	State Xdot;
+	Xdot.t = X.tdot;
+	Xdot.r = X.rdot;
+	Xdot.theta = X.thetadot;
+	Xdot.phi = X.phidot;
+	Xdot.tdot = R_s/(X.r*(R_s - X.r))*X.tdot*X.rdot;
+	Xdot.rdot = R_s*(R_s-X.r)/(2*X.r*X.r*X.r)*X.tdot*X.tdot - R_s/(2*X.r*(R_s-X.r))*X.rdot*X.rdot - (R_s-X.r)*X.thetadot*X.thetadot - sin(X.theta)*sin(X.theta)*(R_s-X.r)*X.phidot*X.phidot;
+	Xdot.thetadot = -2/X.r*X.rdot*X.thetadot + sin(2*X.theta)/2*X.phidot*X.phidot;
+	Xdot.phidot = -2/X.r*X.rdot*X.phidot - 2*cos(X.theta)/sin(X.theta)*X.thetadot*X.phidot;
+	return Xdot;
+}
+
 void main() {
 	vec2 screen_coords = vec2(2.0*(gl_FragCoord.x-viewportX)/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight); // screen space coords from -1.0 to 1.0
 	float aspect = viewportWidth / viewportHeight;
@@ -40,28 +65,38 @@ void main() {
 	float rdot = (x*xdot+y*ydot+z*zdot)/r;
 	float thetadot = -(x*x*zdot-x*z*xdot+y*y*zdot-y*z*ydot)/(r*r*sqrt(x*x+y*y));
 	float phidot = (x*ydot-y*xdot)/(x*x+y*y);
+	State X;
+	X.t = t;
+	X.r = r;
+	X.theta = theta;
+	X.phi = phi;
+	X.tdot = tdot;
+	X.rdot = rdot;
+	X.thetadot = thetadot;
+	X.phidot = phidot;
 	bool captured_by_event_horizon = false;
 	for (int i = 0; i < maxsteps; ++i) {
-		float dlambda = timestep_scale*r;
-		t += tdot*dlambda;
-		r += rdot*dlambda;
-		if (r < R_s) {
+		float dlambda = timestep_scale*X.r;
+		State Xdot = f(X);
+		X.t += Xdot.t*dlambda;
+		X.r += Xdot.r*dlambda;
+		X.theta += Xdot.theta*dlambda;
+		X.phi += Xdot.phi*dlambda;
+		X.tdot += Xdot.tdot*dlambda;
+		X.rdot += Xdot.rdot*dlambda;
+		X.thetadot += Xdot.thetadot*dlambda;
+		X.phidot += Xdot.phidot*dlambda;
+		if (X.r < R_s) {
 			captured_by_event_horizon = true;
 			break;
 		}
-		theta += thetadot*dlambda;
-		phi += phidot*dlambda;
-		tdot += (R_s/(r*(R_s - r))*tdot*rdot)*dlambda;
-		rdot += (R_s*(R_s-r)/(2*r*r*r)*tdot*tdot - R_s/(2*r*(R_s-r))*rdot*rdot - (R_s-r)*thetadot*thetadot - sin(theta)*sin(theta)*(R_s-r)*phidot*phidot)*dlambda;
-		thetadot += (-2/r*rdot*thetadot + sin(2*theta)/2*phidot*phidot)*dlambda;
-		phidot += (-2/r*rdot*phidot - 2*cos(theta)/sin(theta)*thetadot*phidot)*dlambda;
-		if (r > r_camera && rdot > 0.0) {
+		if (X.r > r_camera && X.rdot > 0.0) {
 			break;
 		}
 	}
-	vec3 d_final = vec3(sin(theta)*cos(phi)*rdot + r*cos(theta)*cos(phi)*thetadot - r*sin(theta)*sin(phi)*phidot, 
-	                    sin(theta)*sin(phi)*rdot + r*cos(theta)*sin(phi)*thetadot + r*sin(theta)*cos(phi)*phidot,
-				        cos(theta)*rdot - r*sin(theta)*thetadot);
+	vec3 d_final = vec3(sin(X.theta)*cos(X.phi)*X.rdot + X.r*cos(X.theta)*cos(X.phi)*X.thetadot - X.r*sin(X.theta)*sin(X.phi)*X.phidot, 
+	                    sin(X.theta)*sin(X.phi)*X.rdot + X.r*cos(X.theta)*sin(X.phi)*X.thetadot + X.r*sin(X.theta)*cos(X.phi)*X.phidot,
+				        cos(X.theta)*X.rdot - X.r*sin(X.theta)*X.thetadot);
 	float theta_starmap = asin(d_final.y);
 	float phi_starmap = atan(d_final.x, -d_final.z);	
 	FragColor = vec4(0.0, 0.0, 0.0, 1.0);

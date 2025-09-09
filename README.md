@@ -1,7 +1,7 @@
 # Relativistic Raytracing
 Shader visualization of gravitational lensing around a black hole, written in C++.
 
-## Numerical Integration of a Geodesic
+## Relevant Physics
 
 The Schwarzschild metric in coordinates $(t,r,\theta,\phi)$ with $c=1$ is  
 
