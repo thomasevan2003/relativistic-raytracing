@@ -1,4 +1,4 @@
-#version 330 core
+#version 400 core
 out vec4 FragColor;
 uniform float viewportX;
 uniform float viewportWidth;
@@ -77,15 +77,48 @@ void main() {
 	bool captured_by_event_horizon = false;
 	for (int i = 0; i < maxsteps; ++i) {
 		float dlambda = timestep_scale*X.r;
-		State Xdot = f(X);
-		X.t += Xdot.t*dlambda;
-		X.r += Xdot.r*dlambda;
-		X.theta += Xdot.theta*dlambda;
-		X.phi += Xdot.phi*dlambda;
-		X.tdot += Xdot.tdot*dlambda;
-		X.rdot += Xdot.rdot*dlambda;
-		X.thetadot += Xdot.thetadot*dlambda;
-		X.phidot += Xdot.phidot*dlambda;
+		
+		State X1 = X;
+		State K1 = f(X1);
+		State X2;
+		X2.t = X.t + dlambda*K1.t/2.0;
+		X2.r = X.r + dlambda*K1.t/2.0;
+		X2.theta = X.theta + dlambda*K1.t/2.0;
+		X2.phi = X.phi + dlambda*K1.t/2.0;
+		X2.tdot = X.tdot + dlambda*K1.tdot/2.0;
+		X2.rdot = X.rdot + dlambda*K1.rdot/2.0;
+		X2.thetadot = X.thetadot + dlambda*K1.thetadot/2.0;
+		X2.phidot = X.phidot + dlambda*K1.phidot/2.0;
+		State K2 = f(X2);
+		State X3;
+		X3.t = X.t + dlambda*K2.t/2.0;
+		X3.r = X.r + dlambda*K2.t/2.0;
+		X3.theta = X.theta + dlambda*K2.t/2.0;
+		X3.phi = X.phi + dlambda*K2.t/2.0;
+		X3.tdot = X.tdot + dlambda*K2.tdot/2.0;
+		X3.rdot = X.rdot + dlambda*K2.rdot/2.0;
+		X3.thetadot = X.thetadot + dlambda*K2.thetadot/2.0;
+		X3.phidot = X.phidot + dlambda*K2.phidot/2.0;
+		State K3 = f(X3);
+		State X4;
+		X4.t = X.t + dlambda*K3.t;
+		X4.r = X.r + dlambda*K3.t;
+		X4.theta = X.theta + dlambda*K3.t;
+		X4.phi = X.phi + dlambda*K3.t;
+		X4.tdot = X.tdot + dlambda*K3.tdot;
+		X4.rdot = X.rdot + dlambda*K3.rdot;
+		X4.thetadot = X.thetadot + dlambda*K3.thetadot;
+		X4.phidot = X.phidot + dlambda*K3.phidot;
+		State K4 = f(X4);
+		X.t = X.t + dlambda/6.0*(K1.t + 2.0*K2.t + 2.0*K3.t + K4.t);
+		X.r = X.r + dlambda/6.0*(K1.r + 2.0*K2.r + 2.0*K3.r + K4.r);
+		X.theta = X.theta + dlambda/6.0*(K1.theta + 2.0*K2.theta + 2.0*K3.theta + K4.theta);
+		X.phi = X.phi + dlambda/6.0*(K1.phi + 2.0*K2.phi + 2.0*K3.phi + K4.phi);
+		X.tdot = X.tdot + dlambda/6.0*(K1.tdot + 2.0*K2.tdot + 2.0*K3.tdot + K4.tdot);
+		X.rdot = X.rdot + dlambda/6.0*(K1.rdot + 2.0*K2.rdot + 2.0*K3.rdot + K4.rdot);
+		X.thetadot = X.thetadot + dlambda/6.0*(K1.thetadot + 2.0*K2.thetadot + 2.0*K3.thetadot + K4.thetadot);
+		X.phidot = X.phidot + dlambda/6.0*(K1.phidot + 2.0*K2.phidot + 2.0*K3.phidot + K4.phidot);
+		
 		if (X.r < R_s) {
 			captured_by_event_horizon = true;
 			break;
