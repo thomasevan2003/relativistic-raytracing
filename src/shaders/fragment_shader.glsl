@@ -75,10 +75,24 @@ void main() {
 	X.thetadot = thetadot;
 	X.phidot = phidot;
 	bool captured_by_event_horizon = false;
-	for (int i = 0; i < maxsteps; ++i) {
-		float dlambda = timestep_scale*X.r;
+	int steps = 0;
+	float thetamin = 3.14159265/2.0;
+	while (steps < maxsteps) {
+		++steps;
 		
-		State X1 = X;
+		float dlambda = timestep_scale*X.r*sin(X.theta);
+		
+		State Xdot = f(X);
+		X.t += Xdot.t*dlambda;
+		X.r += Xdot.r*dlambda;
+		X.theta += Xdot.theta*dlambda;
+		X.phi += Xdot.phi*dlambda;
+		X.tdot += Xdot.tdot*dlambda;
+		X.rdot += Xdot.rdot*dlambda;
+		X.thetadot += Xdot.thetadot*dlambda;
+		X.phidot += Xdot.phidot*dlambda;
+		
+		/*State X1 = X;
 		State K1 = f(X1);
 		State X2;
 		X2.t = X.t + dlambda*K1.t/2.0;
@@ -117,7 +131,11 @@ void main() {
 		X.tdot = X.tdot + dlambda/6.0*(K1.tdot + 2.0*K2.tdot + 2.0*K3.tdot + K4.tdot);
 		X.rdot = X.rdot + dlambda/6.0*(K1.rdot + 2.0*K2.rdot + 2.0*K3.rdot + K4.rdot);
 		X.thetadot = X.thetadot + dlambda/6.0*(K1.thetadot + 2.0*K2.thetadot + 2.0*K3.thetadot + K4.thetadot);
-		X.phidot = X.phidot + dlambda/6.0*(K1.phidot + 2.0*K2.phidot + 2.0*K3.phidot + K4.phidot);
+		X.phidot = X.phidot + dlambda/6.0*(K1.phidot + 2.0*K2.phidot + 2.0*K3.phidot + K4.phidot);*/
+		
+		if (abs(X.theta - 3.1415/2.0) > thetamin) {
+			thetamin = abs(X.theta - 3.1415/2.0);
+		}
 		
 		if (X.r < R_s) {
 			captured_by_event_horizon = true;
@@ -136,4 +154,6 @@ void main() {
 	if (!captured_by_event_horizon) {
 		FragColor = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
 	}
+	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
+	//FragColor = vec4(thetamin/3.1415, thetamin/3.1415, thetamin/3.1415, 1.0);
 }
