@@ -1,7 +1,7 @@
 # Relativistic Raytracing
 Shader visualization of gravitational lensing around a black hole, written in C++.
 
-![screenshot](./screenshot_example.jpg)
+![screenshot](./screenshot_example.JPG)
 
 ## Relevant Physics
 
