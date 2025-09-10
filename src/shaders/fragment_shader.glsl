@@ -76,11 +76,10 @@ void main() {
 	X.phidot = phidot;
 	bool captured_by_event_horizon = false;
 	int steps = 0;
-	float thetamin = 3.14159265/2.0;
 	while (steps < maxsteps) {
 		++steps;
 		
-		float dlambda = timestep_scale*X.r*sin(X.theta);
+		float dlambda = timestep_scale*X.r*sqrt(X.r)*sin(X.theta);
 		
 		State Xdot = f(X);
 		X.t += Xdot.t*dlambda;
@@ -132,10 +131,6 @@ void main() {
 		X.rdot = X.rdot + dlambda/6.0*(K1.rdot + 2.0*K2.rdot + 2.0*K3.rdot + K4.rdot);
 		X.thetadot = X.thetadot + dlambda/6.0*(K1.thetadot + 2.0*K2.thetadot + 2.0*K3.thetadot + K4.thetadot);
 		X.phidot = X.phidot + dlambda/6.0*(K1.phidot + 2.0*K2.phidot + 2.0*K3.phidot + K4.phidot);*/
-		
-		if (abs(X.theta - 3.1415/2.0) > thetamin) {
-			thetamin = abs(X.theta - 3.1415/2.0);
-		}
 		
 		if (X.r < R_s) {
 			captured_by_event_horizon = true;
