@@ -75,11 +75,11 @@ void main() {
 	X.thetadot = thetadot;
 	X.phidot = phidot;
 	bool captured_by_event_horizon = false;
-	bool collided_with_accretion_disk = false;
 	int steps = 0;
 	if (R_s == 0.0) {
 		steps = maxsteps;
 	}
+	FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 	while (steps < maxsteps) {
 		++steps;
 		
@@ -101,8 +101,8 @@ void main() {
 		// if path crosses equator, check for collision with accretion disk
 		if ((sin(start_phi))*(sin(X.phi)) < 0.0) {
 			if (r_r < 10.0 && r_r > 3.0) {
-				collided_with_accretion_disk = true;
-				break;
+				float alpha_accretion_disk = 0.8;
+				FragColor.xyz = (1.0-alpha_accretion_disk)*FragColor.xyz + alpha_accretion_disk*vec3(0.0,1.0,0.0);
 			}
 		}
 		// if path crosses event horizon, exit
@@ -120,12 +120,8 @@ void main() {
 				        cos(X.theta)*X.rdot - X.r*sin(X.theta)*X.thetadot);
 	float theta_starmap = asin(d_final.y);
 	float phi_starmap = atan(d_final.x, -d_final.z);	
-	FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 	if (!captured_by_event_horizon) {
-		FragColor = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
-	}
-	if (collided_with_accretion_disk) {
-		FragColor = vec4(0.2,1.0,0.2,1.0);
+		FragColor += texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
 	}
 	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
 }
