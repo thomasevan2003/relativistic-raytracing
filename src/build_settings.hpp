@@ -5,7 +5,7 @@
 #define WINDOW_WIDTH_START 1100
 #define WINDOW_HEIGHT_START 900
 #define FOV_HEIGHT_DEGREES_START 75.0
-#define LATITUDE_START -0.00732939 // start camera facing at Orion Constellation
+#define LATITUDE_START -0.0959931089 // start camera facing at Orion Constellation
 #define LONGITUDE_START 1.45937
 #define LONGITUDE_SCROLL_RATE 0.4
 #define LATITUDE_SCROLL_RATE 0.4

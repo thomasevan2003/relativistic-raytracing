@@ -75,6 +75,7 @@ void main() {
 	X.thetadot = thetadot;
 	X.phidot = phidot;
 	bool captured_by_event_horizon = false;
+	bool collided_with_accretion_disk = false;
 	int steps = 0;
 	if (R_s == 0.0) {
 		steps = maxsteps;
@@ -84,6 +85,8 @@ void main() {
 		
 		float r_r = X.r/R_s;
 		float dlambda = timestep_scale*r_r*sqrt(r_r)*sin(X.theta)*R_s;
+		
+		float start_phi = X.phi;
 		
 		State Xdot = f(X);
 		X.t += Xdot.t*dlambda;
@@ -95,51 +98,19 @@ void main() {
 		X.thetadot += Xdot.thetadot*dlambda;
 		X.phidot += Xdot.phidot*dlambda;
 		
-		/*State X1 = X;
-		State K1 = f(X1);
-		State X2;
-		X2.t = X.t + dlambda*K1.t/2.0;
-		X2.r = X.r + dlambda*K1.t/2.0;
-		X2.theta = X.theta + dlambda*K1.t/2.0;
-		X2.phi = X.phi + dlambda*K1.t/2.0;
-		X2.tdot = X.tdot + dlambda*K1.tdot/2.0;
-		X2.rdot = X.rdot + dlambda*K1.rdot/2.0;
-		X2.thetadot = X.thetadot + dlambda*K1.thetadot/2.0;
-		X2.phidot = X.phidot + dlambda*K1.phidot/2.0;
-		State K2 = f(X2);
-		State X3;
-		X3.t = X.t + dlambda*K2.t/2.0;
-		X3.r = X.r + dlambda*K2.t/2.0;
-		X3.theta = X.theta + dlambda*K2.t/2.0;
-		X3.phi = X.phi + dlambda*K2.t/2.0;
-		X3.tdot = X.tdot + dlambda*K2.tdot/2.0;
-		X3.rdot = X.rdot + dlambda*K2.rdot/2.0;
-		X3.thetadot = X.thetadot + dlambda*K2.thetadot/2.0;
-		X3.phidot = X.phidot + dlambda*K2.phidot/2.0;
-		State K3 = f(X3);
-		State X4;
-		X4.t = X.t + dlambda*K3.t;
-		X4.r = X.r + dlambda*K3.t;
-		X4.theta = X.theta + dlambda*K3.t;
-		X4.phi = X.phi + dlambda*K3.t;
-		X4.tdot = X.tdot + dlambda*K3.tdot;
-		X4.rdot = X.rdot + dlambda*K3.rdot;
-		X4.thetadot = X.thetadot + dlambda*K3.thetadot;
-		X4.phidot = X.phidot + dlambda*K3.phidot;
-		State K4 = f(X4);
-		X.t = X.t + dlambda/6.0*(K1.t + 2.0*K2.t + 2.0*K3.t + K4.t);
-		X.r = X.r + dlambda/6.0*(K1.r + 2.0*K2.r + 2.0*K3.r + K4.r);
-		X.theta = X.theta + dlambda/6.0*(K1.theta + 2.0*K2.theta + 2.0*K3.theta + K4.theta);
-		X.phi = X.phi + dlambda/6.0*(K1.phi + 2.0*K2.phi + 2.0*K3.phi + K4.phi);
-		X.tdot = X.tdot + dlambda/6.0*(K1.tdot + 2.0*K2.tdot + 2.0*K3.tdot + K4.tdot);
-		X.rdot = X.rdot + dlambda/6.0*(K1.rdot + 2.0*K2.rdot + 2.0*K3.rdot + K4.rdot);
-		X.thetadot = X.thetadot + dlambda/6.0*(K1.thetadot + 2.0*K2.thetadot + 2.0*K3.thetadot + K4.thetadot);
-		X.phidot = X.phidot + dlambda/6.0*(K1.phidot + 2.0*K2.phidot + 2.0*K3.phidot + K4.phidot);*/
-		
-		if (X.r < R_s) {
+		// if path crosses equator, check for collision with accretion disk
+		if ((sin(start_phi))*(sin(X.phi)) < 0.0) {
+			if (r_r < 10.0 && r_r > 3.0) {
+				collided_with_accretion_disk = true;
+				break;
+			}
+		}
+		// if path crosses event horizon, exit
+		if (r_r < 1.0) {
 			captured_by_event_horizon = true;
 			break;
 		}
+		// if path reaches original distance traveling away, assume path is escaped
 		if (X.r > r_camera && X.rdot > 0.0) {
 			break;
 		}
@@ -153,6 +124,8 @@ void main() {
 	if (!captured_by_event_horizon) {
 		FragColor = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
 	}
+	if (collided_with_accretion_disk) {
+		FragColor = vec4(0.2,1.0,0.2,1.0);
+	}
 	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
-	//FragColor = vec4(thetamin/3.1415, thetamin/3.1415, thetamin/3.1415, 1.0);
 }
