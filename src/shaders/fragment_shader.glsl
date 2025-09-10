@@ -79,7 +79,10 @@ void main() {
 	if (R_s == 0.0) {
 		steps = maxsteps;
 	}
-	FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	vec4 disk_colors[5];
+	vec3 disk_emission[5];
+	int n_disk_passes = 0;
+	float disk_size = 9.0;
 	while (steps < maxsteps) {
 		++steps;
 		
@@ -99,11 +102,11 @@ void main() {
 		X.phidot += Xdot.phidot*dlambda;
 		
 		// if path crosses equator, check for collision with accretion disk
-		if ((sin(start_phi))*(sin(X.phi)) < 0.0) {
-			if (r_r < 10.0 && r_r > 3.0) {
-				float alpha_accretion_disk = 0.8;
-				FragColor.xyz = (1.0-alpha_accretion_disk)*FragColor.xyz + alpha_accretion_disk*vec3(0.0,1.0,0.0);
-			}
+		if ((sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 5 && r_r < disk_size && r_r > 3.0) {
+			float disk_density = 13.0*pow((disk_size - r_r)/(disk_size - 3.0), 0.45);
+			disk_colors[n_disk_passes] = vec4(1.0, 0.8, 0.4, 0.0)*disk_density;
+			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*disk_density;
+			++n_disk_passes;
 		}
 		// if path crosses event horizon, exit
 		if (r_r < 1.0) {
@@ -120,8 +123,22 @@ void main() {
 				        cos(X.theta)*X.rdot - X.r*sin(X.theta)*X.thetadot);
 	float theta_starmap = asin(d_final.y);
 	float phi_starmap = atan(d_final.x, -d_final.z);	
+	vec4 background = vec4(0.0, 0.0, 0.0, 1.0);
 	if (!captured_by_event_horizon) {
-		FragColor += texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
+		background = texture(starmap, vec2(phi_starmap/(2.0*3.14159265) + 0.5, theta_starmap/3.14159265 + 0.5));
 	}
+	vec3 background_filtered = background.xyz;
+	for (int i = 0; i < n_disk_passes; ++i) {
+		background_filtered *= (1.0 - disk_colors[i].w);
+	}
+	vec3 disks_filtered = vec3(0.0, 0.0, 0.0);
+	for (int i = 0; i < n_disk_passes; ++i) {
+		vec3 disk_filtered = disk_colors[i].xyz*disk_colors[i].w + disk_emission[i].xyz;
+		for (int j = 0; j < n_disk_passes-1; ++j) {
+			disk_filtered *= (1.0 - disk_colors[j].w);
+		}
+		disks_filtered += disk_filtered;
+	}
+	FragColor.xyz = background_filtered + min(disks_filtered,1.0);
 	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
 }
