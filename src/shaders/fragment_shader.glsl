@@ -76,10 +76,14 @@ void main() {
 	X.phidot = phidot;
 	bool captured_by_event_horizon = false;
 	int steps = 0;
+	if (R_s == 0.0) {
+		steps = maxsteps;
+	}
 	while (steps < maxsteps) {
 		++steps;
 		
-		float dlambda = timestep_scale*X.r*sqrt(X.r)*sin(X.theta);
+		float r_r = X.r/R_s;
+		float dlambda = timestep_scale*r_r*sqrt(r_r)*sin(X.theta)*R_s;
 		
 		State Xdot = f(X);
 		X.t += Xdot.t*dlambda;
