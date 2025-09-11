@@ -20,6 +20,7 @@ GUI::GUI() {
 	maxsteps = INITIAL_MAXSTEPS;
 	vsync = VSYNC_START;
 	show_accretion_disk = SHOW_ACCRETION_DISK_START;
+	accretion_disk_size = INITIAL_ACCRETION_DISK_SIZE;
 	glfwSwapInterval(vsync);
 }
 
@@ -49,7 +50,7 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##1", &R_s, 0.0, MAX_R_S);
 	ImGui::PopStyleVar(1);
-	ImGui::Text("Distance (x R_s)");
+	ImGui::Text("Camera Distance / R_s");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##2", &r_camera, 0.0, MAX_R_CAMERA);
@@ -67,6 +68,17 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Checkbox("Accretion Disk", &show_accretion_disk);
+	if (!show_accretion_disk) {
+		ImGui::BeginDisabled();
+	}
+	ImGui::Text("Accretion Disk Radius / R_s");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::SliderFloat("##5", &accretion_disk_size, 0, MAX_ACCRETION_DISK_SIZE);
+	ImGui::PopStyleVar(1);
+	if (!show_accretion_disk) {
+		ImGui::EndDisabled();
+	}
 	ImGui::PopStyleVar(1);
 	bool vsync_last = vsync;
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
@@ -110,6 +122,7 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	glUniform1i(glGetUniformLocation(shader_program, "maxsteps"), (int)maxsteps);
 	glUniform1f(glGetUniformLocation(shader_program, "time"), (float)(glfwGetTime()+777.0));
 	glUniform1i(glGetUniformLocation(shader_program, "show_accretion_disk"), (int)show_accretion_disk);
+	glUniform1f(glGetUniformLocation(shader_program, "accretion_disk_size"), (float)accretion_disk_size);
 	++fps_frames; 
 }
 

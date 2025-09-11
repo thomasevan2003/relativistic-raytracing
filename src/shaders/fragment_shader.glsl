@@ -12,6 +12,7 @@ uniform float timestep_scale;
 uniform float time;
 uniform int maxsteps;
 uniform int show_accretion_disk;
+uniform float accretion_disk_size;
 uniform sampler2D starmap;
 uniform sampler2D disk_ring;
 
@@ -85,7 +86,6 @@ void main() {
 	vec4 disk_colors[5];
 	vec3 disk_emission[5];
 	int n_disk_passes = 0;
-	float disk_size = 12.0;
 	while (steps < maxsteps) {
 		++steps;
 		
@@ -105,16 +105,16 @@ void main() {
 		X.phidot += Xdot.phidot*dlambda;
 		
 		// if path crosses equator, check for collision with accretion disk
-		if (bool(show_accretion_disk) && (sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < disk_size && r_r > 3.0) {
-			float r_fraction = (r_r - 3.0)/(disk_size - 3.0);
+		if (bool(show_accretion_disk) && (sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < accretion_disk_size && r_r > 3.0) {
+			float r_fraction = (r_r - 3.0)/(accretion_disk_size - 3.0);
 			float disk_theta = X.theta;
 			if (abs(X.phi) < 3.14/2.0) {
 				disk_theta = 2.0*3.14159265 - disk_theta;
 			}
-			float n_rings = 40.0;
-			float ring_level = float(int(((r_r+2.5)/(disk_size-3.0)*n_rings)));
-			float r_r_ring1 = ring_level*(disk_size-3.0)/n_rings;
-			float r_r_ring2 = (ring_level+0.5)*(disk_size-3.0)/n_rings;
+			float n_rings = 3.0*accretion_disk_size;
+			float ring_level = float(int(((r_r+2.5)/(accretion_disk_size-3.0)*n_rings)));
+			float r_r_ring1 = ring_level*(accretion_disk_size-3.0)/n_rings;
+			float r_r_ring2 = (ring_level+0.5)*(accretion_disk_size-3.0)/n_rings;
 			float frequency1 = 1.0/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
 			float frequency2 = 1.0/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
 			float r_density_factor = pow(r_fraction,0.6)*pow(1.0-r_fraction,1.0)/0.345;

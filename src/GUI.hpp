@@ -21,6 +21,7 @@ class GUI {
 		float log10_timestep_scale;
 		int maxsteps;
 		bool show_accretion_disk;
+		float accretion_disk_size;
 	
 };
 
