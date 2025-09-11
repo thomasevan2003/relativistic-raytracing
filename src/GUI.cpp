@@ -26,6 +26,7 @@ GUI::GUI() {
 	downsample_rate = INITIAL_DOWNSAMPLE_RATE;
 	do_rgb = INITIAL_DO_RGB;
 	rgb_period = INITIAL_RGB_PERIOD;
+	accretion_disk_frequency = INITIAL_ACCRETION_DISK_FREQUENCY;
 	glfwSwapInterval(vsync);
 }
 
@@ -72,7 +73,6 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::SliderInt("##4", &maxsteps, 0, MAX_MAXSTEPS);
 	ImGui::PopStyleVar(1);
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Checkbox("Accretion Disk", &show_accretion_disk);
 	if (!show_accretion_disk) {
 		ImGui::BeginDisabled();
@@ -81,6 +81,11 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##5", &accretion_disk_size, 0, MAX_ACCRETION_DISK_SIZE);
+	ImGui::PopStyleVar(1);
+	ImGui::Text("Accretion Disk Inner Frequency (Hz)");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::SliderFloat("##8", &accretion_disk_frequency, 0, MAX_ACCRETION_DISK_FREQUENCY);
 	ImGui::PopStyleVar(1);
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
@@ -94,7 +99,6 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	if (!show_accretion_disk) {
 		ImGui::EndDisabled();
 	}
-	ImGui::PopStyleVar(1);
 	ImGui::Text("Downsampling Rate");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
@@ -148,6 +152,7 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	glUniform3f(glGetUniformLocation(shader_program, "rgb_accretion_disk"), rgb.r, rgb.g, rgb.b);
 	glUniform1f(glGetUniformLocation(shader_program, "disk_brightness_multiplier"), do_rgb ? 2.0f : 14.0f);
 	glUniform1f(glGetUniformLocation(shader_program, "disk_opacity_multiplier"), do_rgb ? 2.5f : 4.0f);
+	glUniform1f(glGetUniformLocation(shader_program, "accretion_disk_frequency"), accretion_disk_frequency);
 	++fps_frames; 
 }
 

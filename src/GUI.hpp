@@ -26,6 +26,7 @@ class GUI {
 		float downsample_rate;
 		bool do_rgb;
 		float rgb_period;
+		float accretion_disk_frequency;
 	
 };
 

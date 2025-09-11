@@ -15,6 +15,7 @@ uniform float accretion_disk_size;
 uniform vec3 rgb_accretion_disk;
 uniform float disk_brightness_multiplier;
 uniform float disk_opacity_multiplier;
+uniform float accretion_disk_frequency;
 uniform sampler2D starmap;
 uniform sampler2D disk_ring;
 
@@ -118,8 +119,8 @@ void main() {
 			float ring_level = float(int(((r_r+2.5)/(accretion_disk_size-3.0)*n_rings)));
 			float r_r_ring1 = ring_level*(accretion_disk_size-3.0)/n_rings;
 			float r_r_ring2 = (ring_level+0.5)*(accretion_disk_size-3.0)/n_rings;
-			float frequency1 = 1.0/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
-			float frequency2 = 1.0/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
+			float frequency1 = accretion_disk_frequency/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
+			float frequency2 = accretion_disk_frequency/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
 			float r_density_factor = pow(r_fraction,0.6)*pow(1.0-r_fraction,1.0)/0.345;
 			float disk_density = r_density_factor *
 			                     (0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
