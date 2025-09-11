@@ -150,8 +150,8 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	glUniform1i(glGetUniformLocation(shader_program, "show_accretion_disk"), (int)show_accretion_disk);
 	glUniform1f(glGetUniformLocation(shader_program, "accretion_disk_size"), (float)accretion_disk_size);
 	glUniform3f(glGetUniformLocation(shader_program, "rgb_accretion_disk"), rgb.r, rgb.g, rgb.b);
-	glUniform1f(glGetUniformLocation(shader_program, "disk_brightness_multiplier"), do_rgb ? 2.0f : 14.0f);
-	glUniform1f(glGetUniformLocation(shader_program, "disk_opacity_multiplier"), do_rgb ? 2.5f : 4.0f);
+	glUniform1f(glGetUniformLocation(shader_program, "disk_brightness_multiplier"), do_rgb ? RGB_BRIGHTNESS : NORGB_BRIGHTNESS);
+	glUniform1f(glGetUniformLocation(shader_program, "disk_opacity_multiplier"), do_rgb ? RGB_OPACITY : NORGB_OPACITY);
 	glUniform1f(glGetUniformLocation(shader_program, "accretion_disk_frequency"), accretion_disk_frequency);
 	++fps_frames; 
 }

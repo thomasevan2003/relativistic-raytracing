@@ -32,6 +32,10 @@
 #define INITIAL_RGB_PERIOD 30.0
 #define INITIAL_ACCRETION_DISK_FREQUENCY 1.0
 #define MAX_ACCRETION_DISK_FREQUENCY 10.0
+#define RGB_BRIGHTNESS 2.0f
+#define RGB_OPACITY 3.0f
+#define NORGB_BRIGHTNESS 14.0f
+#define NORGB_OPACITY 4.0f
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"
