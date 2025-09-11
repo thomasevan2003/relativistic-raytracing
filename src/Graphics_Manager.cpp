@@ -28,6 +28,14 @@ void Graphics_Manager::initialize() {
 		std::cerr << "Failed to initialize OpenGL context" << std::endl;
 		std::exit(-1);
 	}
+	glGenTextures(1, &m_framebuffer_texture);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_framebuffer_texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenFramebuffers(1, &m_framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_framebuffer_texture, 0);
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -46,9 +54,14 @@ bool Graphics_Manager::window_open() {
 	return !glfwWindowShouldClose(window);
 }
 
-void Graphics_Manager::start_frame() {
+void Graphics_Manager::start_frame(float downsample_rate) {
 	glfwPollEvents();
 	glfwGetFramebufferSize(window, &m_width, &m_height);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_framebuffer_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)((m_width-CONTROL_BAR_WIDTH)/downsample_rate), (int)(m_height/downsample_rate), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+	glViewport(0,0,(int)((m_width-CONTROL_BAR_WIDTH)/downsample_rate),(int)(m_height/downsample_rate));
 	m_left = false;
 	m_right = false;
 	m_up = false;
@@ -71,7 +84,13 @@ void Graphics_Manager::start_frame() {
 	}
 }
 
-void Graphics_Manager::end_frame() {
+void Graphics_Manager::end_frame(float downsample_rate) {
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_framebuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0,0,(int)((m_width-CONTROL_BAR_WIDTH)/downsample_rate),(int)(m_height/downsample_rate), CONTROL_BAR_WIDTH,0,m_width,m_height, GL_COLOR_BUFFER_BIT,GL_LINEAR);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(window);
 }
 

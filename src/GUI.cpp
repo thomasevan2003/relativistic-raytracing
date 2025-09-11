@@ -21,6 +21,7 @@ GUI::GUI() {
 	vsync = VSYNC_START;
 	show_accretion_disk = SHOW_ACCRETION_DISK_START;
 	accretion_disk_size = INITIAL_ACCRETION_DISK_SIZE;
+	downsample_rate = INITIAL_DOWNSAMPLE_RATE;
 	glfwSwapInterval(vsync);
 }
 
@@ -80,6 +81,11 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 		ImGui::EndDisabled();
 	}
 	ImGui::PopStyleVar(1);
+	ImGui::Text("Downsampling Rate");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::SliderFloat("##6", &downsample_rate, MIN_DOWNSAMPLE_RATE, MAX_DOWNSAMPLE_RATE);
+	ImGui::PopStyleVar(1);
 	bool vsync_last = vsync;
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
@@ -107,12 +113,10 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::End();
 	ImGui::PopStyleVar(2);
 	ImGui::Render();
-	glViewport(CONTROL_BAR_WIDTH, 0, width-CONTROL_BAR_WIDTH, height);
-	viewport_width = width-CONTROL_BAR_WIDTH;
+	viewport_width = width - CONTROL_BAR_WIDTH;
 	viewport_height = height;
-	glUniform1f(glGetUniformLocation(shader_program, "viewportX"), (float)CONTROL_BAR_WIDTH);
-	glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)viewport_width);
-	glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)viewport_height);
+	glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)(viewport_width)/downsample_rate);
+	glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)viewport_height/downsample_rate);
 	glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(fov*3.14159265/180.0));
 	glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
 	glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
@@ -126,3 +130,6 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	++fps_frames; 
 }
 
+float GUI::get_downsample_rate() {
+	return downsample_rate;
+}

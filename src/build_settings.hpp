@@ -24,6 +24,9 @@
 #define UI_PADDING 10
 #define MAX_ACCRETION_DISK_SIZE 50.0
 #define INITIAL_ACCRETION_DISK_SIZE 12.0
+#define MIN_DOWNSAMPLE_RATE 0.5
+#define MAX_DOWNSAMPLE_RATE 5.0
+#define INITIAL_DOWNSAMPLE_RATE 1.5
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"

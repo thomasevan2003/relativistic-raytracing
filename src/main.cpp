@@ -22,7 +22,7 @@ void run() {
 	double last_time = -1.0;
 	double time = -1.0;
 	while (graphics_manager.window_open()) {
-		graphics_manager.start_frame();
+		graphics_manager.start_frame(gui.get_downsample_rate());
 		last_time = time;
 		time = glfwGetTime();
 		double dt = time - last_time;
@@ -35,10 +35,7 @@ void run() {
 		latitude += graphics_manager.key_down() ? -LATITUDE_SCROLL_RATE*dt : 0.0;
 		latitude = std::clamp(latitude, -PI/2.0, PI/2.0);
 		gui.draw(graphics_manager.width(), graphics_manager.height(), latitude, longitude, shader_program);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		graphics_manager.end_frame();
+		graphics_manager.end_frame(gui.get_downsample_rate());
 	}
 	graphics_manager.terminate();
 }

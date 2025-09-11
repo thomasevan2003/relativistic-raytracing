@@ -1,6 +1,5 @@
 #version 400 core
 out vec4 FragColor;
-uniform float viewportX;
 uniform float viewportWidth;
 uniform float viewportHeight;
 uniform float fovHeight;
@@ -41,7 +40,7 @@ State f(State X) {
 }
 
 void main() {
-	vec2 screen_coords = vec2(2.0*(gl_FragCoord.x-viewportX)/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight); // screen space coords from -1.0 to 1.0
+	vec2 screen_coords = vec2(2.0*gl_FragCoord.x/viewportWidth - 1.0, 1.0 - 2.0*gl_FragCoord.y/viewportHeight); // screen space coords from -1.0 to 1.0
 	float aspect = viewportWidth / viewportHeight;
 	float scaleHeight = tan(fovHeight * 0.5); // scaling factor based on field of view: height of point (0,1) in screen space divided by distance from camera to screen
 	float screen_y = screen_coords.y*scaleHeight;

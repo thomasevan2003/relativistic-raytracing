@@ -6,6 +6,7 @@ class GUI {
 		
 		GUI();
 		void draw(int width, int height, double latitude, double longitude, unsigned int shader_program);
+		float get_downsample_rate();
 		
 	private:
 	
@@ -22,6 +23,7 @@ class GUI {
 		int maxsteps;
 		bool show_accretion_disk;
 		float accretion_disk_size;
+		float downsample_rate;
 	
 };
 

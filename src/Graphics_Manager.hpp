@@ -13,12 +13,16 @@ class Graphics_Manager {
 		bool m_right;
 		bool m_up;
 		bool m_down;
+		unsigned int m_framebuffer;
+		unsigned int m_framebuffer_texture;
+		int m_framebuffer_width;
+		int m_framebuffer_height;
 	public:
 		void initialize();
 		void terminate();
 		bool window_open();
-		void start_frame();
-		void end_frame();
+		void start_frame(float downsample_rate);
+		void end_frame(float downsample_rate);
 		int width();
 		int height();
 		bool key_up();
