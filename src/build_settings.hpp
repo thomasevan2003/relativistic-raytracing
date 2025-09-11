@@ -28,5 +28,6 @@
 #define STARMAP_PATH "resources/TychoSkymapII.t3_04096x02048.jpg"
 //#define STARMAP_PATH "resources/TychoSkymapII.t5_04096x02048.jpg"
 //#define STARMAP_PATH "resources/checkerboard.jpg"
+#define DISK_RING_PATH "resources/disk.jpg"
 
 #endif

@@ -11,6 +11,7 @@ uniform float r_camera;
 uniform float timestep_scale;
 uniform int maxsteps;
 uniform sampler2D starmap;
+uniform sampler2D disk_ring;
 
 struct State {
 	float t;
@@ -140,5 +141,8 @@ void main() {
 		disks_filtered += disk_filtered;
 	}
 	FragColor.xyz = background_filtered + min(disks_filtered,1.0);
+	if (screen_coords.y < -0.95) {
+		FragColor = texture(disk_ring, vec2((screen_coords.x+1.0)/2.0, (screen_coords.y+1.0/2.0)*20));
+	}
 	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
 }

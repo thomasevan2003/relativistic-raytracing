@@ -10,8 +10,6 @@
 
 unsigned int create_gpu_program() {
 	constexpr float vertices[] = { -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f }; // two triangles to fill viewport
-	int texture_width, texture_height, nrChannels;
-	unsigned char *texture_data = stbi_load(STARMAP_PATH, &texture_width, &texture_height, &nrChannels, 0); 
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
 	unsigned int VAO;
@@ -62,15 +60,29 @@ unsigned int create_gpu_program() {
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 	glBindVertexArray(VAO);
-	unsigned int texture;
-	glGenTextures(1, &texture);
+	int starmap_texture_width, starmap_texture_height, starmap_nrChannels;
+	unsigned char *starmap_texture_data = stbi_load(STARMAP_PATH, &starmap_texture_width, &starmap_texture_height, &starmap_nrChannels, 0); 
+	unsigned int starmap_texture;
+	glGenTextures(1, &starmap_texture);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, starmap_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-	glTexImage2D(GL_TEXTURE_2D, 0, format, texture_width, texture_height, 0, format, GL_UNSIGNED_BYTE, texture_data);
+	GLenum starmap_format = (starmap_nrChannels == 4) ? GL_RGBA : GL_RGB;
+	glTexImage2D(GL_TEXTURE_2D, 0, starmap_format, starmap_texture_width, starmap_texture_height, 0, starmap_format, GL_UNSIGNED_BYTE, starmap_texture_data);
+	stbi_image_free(starmap_texture_data);
 	glUniform1i(glGetUniformLocation(shader_program, "starmap"), 0);
-	stbi_image_free(texture_data);
+	int disk_texture_width, disk_texture_height, disk_nrChannels;
+	unsigned char *disk_texture_data = stbi_load(DISK_RING_PATH, &disk_texture_width, &disk_texture_height, &disk_nrChannels, 0); 
+	unsigned int disk_texture;
+	glGenTextures(1, &disk_texture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, disk_texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	GLenum disk_format = (disk_nrChannels == 4) ? GL_RGBA : GL_RGB;
+	glTexImage2D(GL_TEXTURE_2D, 0, disk_format, disk_texture_width, disk_texture_height, 0, disk_format, GL_UNSIGNED_BYTE, disk_texture_data);
+	stbi_image_free(disk_texture_data);
+	glUniform1i(glGetUniformLocation(shader_program, "disk_ring"), 1);
 	return shader_program;
 }
