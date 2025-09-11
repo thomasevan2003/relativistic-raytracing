@@ -19,6 +19,7 @@ GUI::GUI() {
 	m_log10_timestep_scale = INITIAL_LOG10_TIMESTEP_SCALE;
 	m_maxsteps = INITIAL_MAXSTEPS;
 	m_vsync = VSYNC_START;
+	m_show_accretion_disk = SHOW_ACCRETION_DISK_START;
 	glfwSwapInterval(m_vsync);
 }
 
@@ -62,6 +63,10 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderInt("##4", &m_maxsteps, 0, MAX_MAXSTEPS);
+	ImGui::PopStyleVar(1);
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::Checkbox("Accretion Disk", &m_show_accretion_disk);
 	ImGui::PopStyleVar(1);
 	bool vsync_last = m_vsync;
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
@@ -119,6 +124,9 @@ float GUI::timestep_scale() {
 }
 int GUI::maxsteps() {
 	return m_maxsteps;
+}
+bool GUI::show_accretion_disk() {
+	return m_show_accretion_disk;
 }
 
 void GUI::set_fps(double fps) {

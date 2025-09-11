@@ -46,6 +46,7 @@ void run() {
 		glUniform1f(glGetUniformLocation(shader_program, "timestep_scale"), (float)gui.timestep_scale());
 		glUniform1i(glGetUniformLocation(shader_program, "maxsteps"), (int)gui.maxsteps());
 		glUniform1f(glGetUniformLocation(shader_program, "time"), (float)(glfwGetTime()+777.0));
+		glUniform1i(glGetUniformLocation(shader_program, "show_accretion_disk"), (int)gui.show_accretion_disk());
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -15,6 +15,7 @@ class GUI {
 		float r_camera();
 		float timestep_scale();
 		int maxsteps();
+		bool show_accretion_disk();
 		
 	private:
 	
@@ -29,6 +30,7 @@ class GUI {
 		float m_r_camera;
 		float m_log10_timestep_scale;
 		int m_maxsteps;
+		bool m_show_accretion_disk;
 	
 };
 

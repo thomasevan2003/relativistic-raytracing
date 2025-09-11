@@ -11,6 +11,7 @@ uniform float r_camera;
 uniform float timestep_scale;
 uniform float time;
 uniform int maxsteps;
+uniform int show_accretion_disk;
 uniform sampler2D starmap;
 uniform sampler2D disk_ring;
 
@@ -104,7 +105,7 @@ void main() {
 		X.phidot += Xdot.phidot*dlambda;
 		
 		// if path crosses equator, check for collision with accretion disk
-		if ((sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < disk_size && r_r > 3.0) {
+		if (bool(show_accretion_disk) && (sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < disk_size && r_r > 3.0) {
 			float r_fraction = (r_r - 3.0)/(disk_size - 3.0);
 			float disk_theta = X.theta;
 			if (abs(X.phi) < 3.14/2.0) {
