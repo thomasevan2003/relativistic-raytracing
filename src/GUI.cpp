@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 #include "build_settings.hpp"
 #include <cmath>
+#include "hsv_to_rgb.hpp"
+#include <iostream>
 
 GUI::GUI() {
 	fov = FOV_HEIGHT_DEGREES_START;
@@ -22,6 +24,8 @@ GUI::GUI() {
 	show_accretion_disk = SHOW_ACCRETION_DISK_START;
 	accretion_disk_size = INITIAL_ACCRETION_DISK_SIZE;
 	downsample_rate = INITIAL_DOWNSAMPLE_RATE;
+	do_rgb = INITIAL_DO_RGB;
+	rgb_period = INITIAL_RGB_PERIOD;
 	glfwSwapInterval(vsync);
 }
 
@@ -29,6 +33,7 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	ImGui::GetIO().FontGlobalScale = 1.2f;
 	ImGui::SetNextWindowPos(ImVec2(0,0));
 	ImGui::SetNextWindowSize(ImVec2(0, (float)height));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(UI_PADDING,UI_PADDING));
@@ -46,7 +51,7 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::SliderFloat("##0", &fov, 0.0, 180.0);
 	ImGui::PopStyleVar(1);
-	ImGui::Text("R_s");
+	ImGui::Text("Schwarzschild Radius");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##1", &R_s, 0.0, MAX_R_S);
@@ -61,7 +66,7 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##3", &log10_timestep_scale, MIN_LOG10_TIMESTEP_SCALE, MAX_LOG10_TIMESTEP_SCALE);
 	ImGui::PopStyleVar(1);
-	ImGui::Text("Max steps per photon");
+	ImGui::Text("Max Steps per Geodesic");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderInt("##4", &maxsteps, 0, MAX_MAXSTEPS);
@@ -76,6 +81,15 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##5", &accretion_disk_size, 0, MAX_ACCRETION_DISK_SIZE);
+	ImGui::PopStyleVar(1);
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::Checkbox("rgb", &do_rgb);
+	ImGui::PopStyleVar(1);
+	ImGui::Text("RGB Period (s)");
+	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
+	ImGui::SliderFloat("##7", &rgb_period, 0, MAX_RGB_PERIOD);
 	ImGui::PopStyleVar(1);
 	if (!show_accretion_disk) {
 		ImGui::EndDisabled();
@@ -115,6 +129,10 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::Render();
 	viewport_width = width - CONTROL_BAR_WIDTH;
 	viewport_height = height;
+	RGB rgb = {1.0f, 0.2f, 0.1f};
+	if (do_rgb) {
+		rgb = hsv_to_rgb({fmod((float)glfwGetTime()/rgb_period, 1.0f), 1.0f, 1.0f});
+	}
 	glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)(viewport_width)/downsample_rate);
 	glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)viewport_height/downsample_rate);
 	glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(fov*3.14159265/180.0));
@@ -127,6 +145,9 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	glUniform1f(glGetUniformLocation(shader_program, "time"), (float)(glfwGetTime()+777.0));
 	glUniform1i(glGetUniformLocation(shader_program, "show_accretion_disk"), (int)show_accretion_disk);
 	glUniform1f(glGetUniformLocation(shader_program, "accretion_disk_size"), (float)accretion_disk_size);
+	glUniform3f(glGetUniformLocation(shader_program, "rgb_accretion_disk"), rgb.r, rgb.g, rgb.b);
+	glUniform1f(glGetUniformLocation(shader_program, "disk_brightness_multiplier"), do_rgb ? 2.0f : 14.0f);
+	glUniform1f(glGetUniformLocation(shader_program, "disk_opacity_multiplier"), do_rgb ? 2.5f : 4.0f);
 	++fps_frames; 
 }
 

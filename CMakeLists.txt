@@ -38,6 +38,7 @@ set(SOURCES
 	src/create_gpu_program.cpp
 	src/GUI.cpp
 	src/stb_image.c
+	src/hsv_to_rgb.cpp
 	${IMGUI_DIR}/imgui.cpp
 	${IMGUI_DIR}/imgui_draw.cpp
 	${IMGUI_DIR}/imgui_tables.cpp

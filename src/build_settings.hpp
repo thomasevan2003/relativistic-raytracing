@@ -2,8 +2,8 @@
 #define BUILD_SETTINGS_HPP
 
 #define CONTROL_BAR_WIDTH 300
-#define WINDOW_WIDTH_START 1100
-#define WINDOW_HEIGHT_START 900
+#define WINDOW_WIDTH_START 1200
+#define WINDOW_HEIGHT_START 600
 #define FOV_HEIGHT_DEGREES_START 60.0
 #define LATITUDE_START -0.0959931089 // start camera facing at Orion Constellation
 #define LONGITUDE_START 1.45937
@@ -27,6 +27,9 @@
 #define MIN_DOWNSAMPLE_RATE 0.5
 #define MAX_DOWNSAMPLE_RATE 5.0
 #define INITIAL_DOWNSAMPLE_RATE 1.5
+#define INITIAL_DO_RGB false
+#define MAX_RGB_PERIOD 60.0
+#define INITIAL_RGB_PERIOD 30.0
 
 #define VERTEX_SHADER_PATH "shaders/vertex_shader.glsl"
 #define FRAGMENT_SHADER_PATH "shaders/fragment_shader.glsl"

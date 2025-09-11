@@ -24,6 +24,8 @@ class GUI {
 		bool show_accretion_disk;
 		float accretion_disk_size;
 		float downsample_rate;
+		bool do_rgb;
+		float rgb_period;
 	
 };
 

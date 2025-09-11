@@ -12,6 +12,9 @@ uniform float time;
 uniform int maxsteps;
 uniform int show_accretion_disk;
 uniform float accretion_disk_size;
+uniform vec3 rgb_accretion_disk;
+uniform float disk_brightness_multiplier;
+uniform float disk_opacity_multiplier;
 uniform sampler2D starmap;
 uniform sampler2D disk_ring;
 
@@ -26,6 +29,7 @@ struct State {
 	float phidot;
 };
 
+// first derivative of state space vector
 State f(State X) {
 	State Xdot;
 	Xdot.t = X.tdot;
@@ -120,8 +124,8 @@ void main() {
 			float disk_density = r_density_factor *
 			                     (0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
 									  + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency2, r_fraction*n_rings+0.5)).x*0.7);
-			disk_colors[n_disk_passes] = vec4(1.0, 0.2, 0.1, 1.0*min(disk_density*4.0,1.0));
-			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*(disk_density)*14.0;
+			disk_colors[n_disk_passes] = vec4(rgb_accretion_disk, 1.0*min(disk_density*disk_opacity_multiplier,1.0));
+			disk_emission[n_disk_passes] = rgb_accretion_disk*(disk_density)*disk_brightness_multiplier;
 			++n_disk_passes;
 		}
 		// if path crosses event horizon, exit

@@ -10,6 +10,7 @@
 #include "create_gpu_program.hpp"
 #include "GUI.hpp"
 #include <algorithm>
+#include <iostream>
 
 void run() {
 	constexpr double PI = 3.14159265358979;
