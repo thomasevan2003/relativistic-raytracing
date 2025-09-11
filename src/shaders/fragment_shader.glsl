@@ -84,7 +84,7 @@ void main() {
 	vec4 disk_colors[5];
 	vec3 disk_emission[5];
 	int n_disk_passes = 0;
-	float disk_size = 9.0;
+	float disk_size = 12.0;
 	while (steps < maxsteps) {
 		++steps;
 		
@@ -110,7 +110,11 @@ void main() {
 			if (abs(X.phi) < 3.14/2.0) {
 				disk_theta = 2.0*3.14159265 - disk_theta;
 			}
-			float disk_density = 13.0*pow(r_fraction, 0.45)*(0.5 + texture(disk_ring, vec2(disk_theta/(3.14159265*2.0)+time/5.0, r_fraction*15.0)).x*0.5);
+			float n_rings = 15.0;
+			float ring_level = float(int(((r_r+2.5)/(disk_size-3.0)*n_rings)));
+			float r_r_ring = ring_level*(disk_size-3.0)/n_rings;
+			float frequency = 1.0/sqrt(r_r_ring*r_r_ring*r_r_ring/27.0);
+			float disk_density = 13.0*pow(r_fraction, 0.45)*(0.4 + texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency, r_fraction*n_rings)).x*0.6);
 			disk_colors[n_disk_passes] = vec4(1.0, 0.8, 0.4, 0.0)*disk_density;
 			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*disk_density;
 			++n_disk_passes;
