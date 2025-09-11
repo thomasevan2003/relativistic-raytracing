@@ -104,22 +104,24 @@ void main() {
 		X.phidot += Xdot.phidot*dlambda;
 		
 		// if path crosses equator, check for collision with accretion disk
-		if ((sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 5 && r_r < disk_size && r_r > 3.0) {
+		if ((sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < disk_size && r_r > 3.0) {
 			float r_fraction = (r_r - 3.0)/(disk_size - 3.0);
 			float disk_theta = X.theta;
 			if (abs(X.phi) < 3.14/2.0) {
 				disk_theta = 2.0*3.14159265 - disk_theta;
 			}
-			float n_rings = 20.0;
+			float n_rings = 40.0;
 			float ring_level = float(int(((r_r+2.5)/(disk_size-3.0)*n_rings)));
 			float r_r_ring1 = ring_level*(disk_size-3.0)/n_rings;
 			float r_r_ring2 = (ring_level+0.5)*(disk_size-3.0)/n_rings;
 			float frequency1 = 1.0/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
 			float frequency2 = 1.0/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
-			float disk_density = 20.0*(pow(1.0-r_fraction, 0.3))*(0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
-																+ 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency2, r_fraction*n_rings+0.5)).x*0.7);
-			disk_colors[n_disk_passes] = vec4(1.0, 0.8, 0.4, 0.0)*disk_density;
-			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*disk_density;
+			float r_density_factor = pow(r_fraction,0.6)*pow(1.0-r_fraction,1.0)/0.345;
+			float disk_density = r_density_factor *
+			                     (0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
+									  + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency2, r_fraction*n_rings+0.5)).x*0.7);
+			disk_colors[n_disk_passes] = vec4(1.0, 0.2, 0.1, 1.0*min(disk_density*4.0,1.0));
+			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*(disk_density)*14.0;
 			++n_disk_passes;
 		}
 		// if path crosses event horizon, exit
@@ -148,11 +150,11 @@ void main() {
 	vec3 disks_filtered = vec3(0.0, 0.0, 0.0);
 	for (int i = 0; i < n_disk_passes; ++i) {
 		vec3 disk_filtered = disk_colors[i].xyz*disk_colors[i].w + disk_emission[i].xyz;
-		for (int j = 0; j < n_disk_passes-1; ++j) {
+		for (int j = 0; j < i; ++j) {
 			disk_filtered *= (1.0 - disk_colors[j].w);
 		}
 		disks_filtered += disk_filtered;
 	}
 	FragColor.xyz = background_filtered + min(disks_filtered,1.0);
-	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
+	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0); // show number of steps per pixel (to identify problem areas)
 }
