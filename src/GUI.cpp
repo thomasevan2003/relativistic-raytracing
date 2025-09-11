@@ -10,20 +10,20 @@
 #include <cmath>
 
 GUI::GUI() {
-	m_fov = FOV_HEIGHT_DEGREES_START;
-	m_fps = 0.0;
-	m_R_s = 1.0;
-	m_last_fps_time = glfwGetTime();
-	m_fps_frames = 0;
-	m_r_camera = INITIAL_R_CAMERA;
-	m_log10_timestep_scale = INITIAL_LOG10_TIMESTEP_SCALE;
-	m_maxsteps = INITIAL_MAXSTEPS;
-	m_vsync = VSYNC_START;
-	m_show_accretion_disk = SHOW_ACCRETION_DISK_START;
-	glfwSwapInterval(m_vsync);
+	fov = FOV_HEIGHT_DEGREES_START;
+	fps = 0.0;
+	R_s = 1.0;
+	last_fps_time = glfwGetTime();
+	fps_frames = 0;
+	r_camera = INITIAL_R_CAMERA;
+	log10_timestep_scale = INITIAL_LOG10_TIMESTEP_SCALE;
+	maxsteps = INITIAL_MAXSTEPS;
+	vsync = VSYNC_START;
+	show_accretion_disk = SHOW_ACCRETION_DISK_START;
+	glfwSwapInterval(vsync);
 }
 
-void GUI::draw(int width, int height, double latitude, double longitude) {
+void GUI::draw(int width, int height, double latitude, double longitude, unsigned int shader_program) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -42,53 +42,53 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui::Text("Field of View (deg)");
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
-	ImGui::SliderFloat("##0", &m_fov, 0.0, 180.0);
+	ImGui::SliderFloat("##0", &fov, 0.0, 180.0);
 	ImGui::PopStyleVar(1);
 	ImGui::Text("R_s");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::SliderFloat("##1", &m_R_s, 0.0, MAX_R_S);
+	ImGui::SliderFloat("##1", &R_s, 0.0, MAX_R_S);
 	ImGui::PopStyleVar(1);
 	ImGui::Text("Distance (x R_s)");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::SliderFloat("##2", &m_r_camera, 0.0, MAX_R_CAMERA);
+	ImGui::SliderFloat("##2", &r_camera, 0.0, MAX_R_CAMERA);
 	ImGui::PopStyleVar(1);
 	ImGui::Text("log10(timestep_scale)");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::SliderFloat("##3", &m_log10_timestep_scale, MIN_LOG10_TIMESTEP_SCALE, MAX_LOG10_TIMESTEP_SCALE);
+	ImGui::SliderFloat("##3", &log10_timestep_scale, MIN_LOG10_TIMESTEP_SCALE, MAX_LOG10_TIMESTEP_SCALE);
 	ImGui::PopStyleVar(1);
 	ImGui::Text("Max steps per photon");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::SliderInt("##4", &m_maxsteps, 0, MAX_MAXSTEPS);
+	ImGui::SliderInt("##4", &maxsteps, 0, MAX_MAXSTEPS);
 	ImGui::PopStyleVar(1);
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::Checkbox("Accretion Disk", &m_show_accretion_disk);
+	ImGui::Checkbox("Accretion Disk", &show_accretion_disk);
 	ImGui::PopStyleVar(1);
-	bool vsync_last = m_vsync;
+	bool vsync_last = vsync;
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::Checkbox("vsync", &m_vsync);
+	ImGui::Checkbox("vsync", &vsync);
 	ImGui::PopStyleVar(1);
-	if (m_vsync != vsync_last) {
-		glfwSwapInterval(m_vsync ? 1 : 0);
+	if (vsync != vsync_last) {
+		glfwSwapInterval(vsync ? 1 : 0);
 	}
 	ImGui::Text("longitude: %.1f deg", longitude*180.0/3.14159265);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Text("latitude:  %.1f deg", latitude*180.0/3.14159265);
 	ImGui::PopStyleVar(1);
 	double time = glfwGetTime();
-	double fps_time = time - m_last_fps_time;
+	double fps_time = time - last_fps_time;
 	if (fps_time > FPS_REFRESH_TIME) {
-		m_last_fps_time = time;
-		m_fps = m_fps_frames/fps_time;
-		m_fps_frames = 0;
+		last_fps_time = time;
+		fps = fps_frames/fps_time;
+		fps_frames = 0;
 	}
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
-	ImGui::Text("%.1f fps", m_fps);
+	ImGui::Text("%.1f fps", fps);
 	ImGui::PopStyleVar(1);
 	ImGui::EndChild();
 	ImGui::PopStyleVar(2);
@@ -96,40 +96,20 @@ void GUI::draw(int width, int height, double latitude, double longitude) {
 	ImGui::PopStyleVar(2);
 	ImGui::Render();
 	glViewport(CONTROL_BAR_WIDTH, 0, width-CONTROL_BAR_WIDTH, height);
-	m_viewport_width = width-CONTROL_BAR_WIDTH;
-	m_viewport_height = height;
-	++m_fps_frames; 
-}
-
-int GUI::viewport_width() {
-	return m_viewport_width;
-}
-int GUI::viewport_height() {
-	return m_viewport_height;
-}
-int GUI::viewport_x() {
-	return CONTROL_BAR_WIDTH;
-}
-float GUI::fov() {
-	return m_fov;
-}
-float GUI::R_s() {
-	return m_R_s;
-}
-float GUI::r_camera() {
-	return m_r_camera;
-}
-float GUI::timestep_scale() {
-	return pow(10.0f, (float)m_log10_timestep_scale);
-}
-int GUI::maxsteps() {
-	return m_maxsteps;
-}
-bool GUI::show_accretion_disk() {
-	return m_show_accretion_disk;
-}
-
-void GUI::set_fps(double fps) {
-	m_fps = fps;
+	viewport_width = width-CONTROL_BAR_WIDTH;
+	viewport_height = height;
+	glUniform1f(glGetUniformLocation(shader_program, "viewportX"), (float)CONTROL_BAR_WIDTH);
+	glUniform1f(glGetUniformLocation(shader_program, "viewportWidth"), (float)viewport_width);
+	glUniform1f(glGetUniformLocation(shader_program, "viewportHeight"), (float)viewport_height);
+	glUniform1f(glGetUniformLocation(shader_program, "fovHeight"), (float)(fov*3.14159265/180.0));
+	glUniform1f(glGetUniformLocation(shader_program, "latitude"), (float)latitude);
+	glUniform1f(glGetUniformLocation(shader_program, "longitude"), (float)longitude);
+	glUniform1f(glGetUniformLocation(shader_program, "R_s"), (float)R_s);
+	glUniform1f(glGetUniformLocation(shader_program, "r_camera"), (float)r_camera);
+	glUniform1f(glGetUniformLocation(shader_program, "timestep_scale"), pow(10.0f, (float)log10_timestep_scale));
+	glUniform1i(glGetUniformLocation(shader_program, "maxsteps"), (int)maxsteps);
+	glUniform1f(glGetUniformLocation(shader_program, "time"), (float)(glfwGetTime()+777.0));
+	glUniform1i(glGetUniformLocation(shader_program, "show_accretion_disk"), (int)show_accretion_disk);
+	++fps_frames; 
 }
 
