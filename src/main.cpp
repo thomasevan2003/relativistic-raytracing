@@ -45,6 +45,7 @@ void run() {
 		glUniform1f(glGetUniformLocation(shader_program, "r_camera"), (float)gui.r_camera());
 		glUniform1f(glGetUniformLocation(shader_program, "timestep_scale"), (float)gui.timestep_scale());
 		glUniform1i(glGetUniformLocation(shader_program, "maxsteps"), (int)gui.maxsteps());
+		glUniform1f(glGetUniformLocation(shader_program, "time"), (float)glfwGetTime());
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

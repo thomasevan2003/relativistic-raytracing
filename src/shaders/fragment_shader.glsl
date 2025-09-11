@@ -9,6 +9,7 @@ uniform float longitude;
 uniform float R_s;
 uniform float r_camera;
 uniform float timestep_scale;
+uniform float time;
 uniform int maxsteps;
 uniform sampler2D starmap;
 uniform sampler2D disk_ring;
@@ -104,7 +105,12 @@ void main() {
 		
 		// if path crosses equator, check for collision with accretion disk
 		if ((sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 5 && r_r < disk_size && r_r > 3.0) {
-			float disk_density = 13.0*pow((disk_size - r_r)/(disk_size - 3.0), 0.45);
+			float r_fraction = (disk_size - r_r)/(disk_size - 3.0);
+			float disk_theta = X.theta;
+			if (abs(X.phi) < 3.14/2.0) {
+				disk_theta = 2.0*3.14159265 - disk_theta;
+			}
+			float disk_density = 13.0*pow(r_fraction, 0.45)*(0.5 + texture(disk_ring, vec2(disk_theta/(3.14159265*2.0)+time/5.0, r_fraction*15.0)).x*0.5);
 			disk_colors[n_disk_passes] = vec4(1.0, 0.8, 0.4, 0.0)*disk_density;
 			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*disk_density;
 			++n_disk_passes;
@@ -141,8 +147,5 @@ void main() {
 		disks_filtered += disk_filtered;
 	}
 	FragColor.xyz = background_filtered + min(disks_filtered,1.0);
-	if (screen_coords.y < -0.95) {
-		FragColor = texture(disk_ring, vec2((screen_coords.x+1.0)/2.0, (screen_coords.y+1.0/2.0)*20));
-	}
 	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0);  
 }
