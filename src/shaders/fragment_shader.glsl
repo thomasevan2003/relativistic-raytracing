@@ -105,16 +105,19 @@ void main() {
 		
 		// if path crosses equator, check for collision with accretion disk
 		if ((sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 5 && r_r < disk_size && r_r > 3.0) {
-			float r_fraction = (disk_size - r_r)/(disk_size - 3.0);
+			float r_fraction = (r_r - 3.0)/(disk_size - 3.0);
 			float disk_theta = X.theta;
 			if (abs(X.phi) < 3.14/2.0) {
 				disk_theta = 2.0*3.14159265 - disk_theta;
 			}
-			float n_rings = 15.0;
+			float n_rings = 20.0;
 			float ring_level = float(int(((r_r+2.5)/(disk_size-3.0)*n_rings)));
-			float r_r_ring = ring_level*(disk_size-3.0)/n_rings;
-			float frequency = 1.0/sqrt(r_r_ring*r_r_ring*r_r_ring/27.0);
-			float disk_density = 13.0*pow(r_fraction, 0.45)*(0.4 + texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency, r_fraction*n_rings)).x*0.6);
+			float r_r_ring1 = ring_level*(disk_size-3.0)/n_rings;
+			float r_r_ring2 = (ring_level+0.5)*(disk_size-3.0)/n_rings;
+			float frequency1 = 1.0/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
+			float frequency2 = 1.0/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
+			float disk_density = 20.0*(pow(1.0-r_fraction, 0.3))*(0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
+																+ 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency2, r_fraction*n_rings+0.5)).x*0.7);
 			disk_colors[n_disk_passes] = vec4(1.0, 0.8, 0.4, 0.0)*disk_density;
 			disk_emission[n_disk_passes] = vec3(1.0, 0.2, 0.1)*disk_density;
 			++n_disk_passes;
