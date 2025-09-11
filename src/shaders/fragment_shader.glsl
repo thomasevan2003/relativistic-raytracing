@@ -161,7 +161,7 @@ void main() {
 		disks_filtered += disk_filtered;
 	}
 	float maxcolor = max(disks_filtered.x, max(disks_filtered.y, disks_filtered.z));
-	float saturation = max(maxcolor - 6.0, 0.0);
+	float saturation = max(maxcolor - disk_brightness_multiplier/2.0, 0.0);
 	FragColor.xyz = background_filtered + min(disks_filtered+saturation,1.0);
 	//FragColor = vec4(float(steps)/float(maxsteps), float(steps)/float(maxsteps), float(steps)/float(maxsteps), 1.0); // show number of steps per pixel (to identify problem areas)
 }
