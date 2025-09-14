@@ -114,7 +114,7 @@ void main() {
 		}
 		
 		// if path crosses equator, check for collision with accretion disk
-		if (bool(show_accretion_disk) && (sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < accretion_disk_size && r_r > 3.0) {
+		if (bool(show_accretion_disk) && (sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2) {
 			float dlambda_back;
 			float phi_crossing;
 			if (X.phi < 3.1415/2.0 && X.phi > -3.1415/2.0) {
@@ -126,26 +126,27 @@ void main() {
 			}
 			dlambda_back = (phi_crossing - X.phi)/X.phidot;
 			float r_r_crossing = (X.r + X.rdot*dlambda_back)/R_s;
-			float theta_crossing = X.theta + X.thetadot*dlambda_back;
-			float r_fraction = (r_r_crossing - 3.0)/(accretion_disk_size - 3.0);
-			float disk_theta = theta_crossing;
-			if (abs(X.phi) < 3.14/2.0) {
-				disk_theta = 2.0*3.14159265 - disk_theta;
+			if (r_r_crossing > 3.0 && r_r_crossing < accretion_disk_size) {
+				float theta_crossing = X.theta + X.thetadot*dlambda_back;
+				float r_fraction = (r_r_crossing - 3.0)/(accretion_disk_size - 3.0);
+				float disk_theta = theta_crossing;
+				if (abs(X.phi) < 3.14/2.0) {
+					disk_theta = 2.0*3.14159265 - disk_theta;
+				}
+				float n_rings = 3.0*accretion_disk_size;
+				float ring_level = float(int(((r_r_crossing+2.5)/(accretion_disk_size-3.0)*n_rings)));
+				float r_r_ring1 = ring_level*(accretion_disk_size-3.0)/n_rings;
+				float r_r_ring2 = (ring_level+0.5)*(accretion_disk_size-3.0)/n_rings;
+				float frequency1 = accretion_disk_frequency/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
+				float frequency2 = accretion_disk_frequency/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
+				float r_density_factor = pow(r_fraction,0.6)*pow(1.0-r_fraction,1.0)/0.345;
+				float disk_density = r_density_factor *
+									 (0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
+										  + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency2, r_fraction*n_rings+0.5)).x*0.7);
+				disk_colors[n_disk_passes] = vec4(rgb_accretion_disk, 1.0*min(disk_density*disk_opacity_multiplier,1.0));
+				disk_emission[n_disk_passes] = rgb_accretion_disk*(disk_density)*disk_brightness_multiplier;
+				++n_disk_passes;
 			}
-			float n_rings = 3.0*accretion_disk_size;
-			float ring_level = float(int(((r_r_crossing+2.5)/(accretion_disk_size-3.0)*n_rings)));
-			float r_r_ring1 = ring_level*(accretion_disk_size-3.0)/n_rings;
-			float r_r_ring2 = (ring_level+0.5)*(accretion_disk_size-3.0)/n_rings;
-			float frequency1 = accretion_disk_frequency/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
-			float frequency2 = accretion_disk_frequency/sqrt(r_r_ring2*r_r_ring2*r_r_ring2/27.0);
-			float r_density_factor = pow(r_fraction,0.6)*pow(1.0-r_fraction,1.0)/0.345;
-			float disk_density = r_density_factor *
-			                     (0.2 + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency1, r_fraction*n_rings)).x*0.7
-									  + 0.4*texture(disk_ring, vec2(disk_theta/(3.14159265*2.0) + time*frequency2, r_fraction*n_rings+0.5)).x*0.7);
-			disk_colors[n_disk_passes] = vec4(rgb_accretion_disk, 1.0*min(disk_density*disk_opacity_multiplier,1.0));
-			disk_emission[n_disk_passes] = rgb_accretion_disk*(disk_density)*disk_brightness_multiplier;
-			++n_disk_passes;
-			
 		}
 		// if path crosses event horizon, exit
 		if (r_r < 1.0) {
