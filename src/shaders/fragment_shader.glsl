@@ -94,7 +94,7 @@ void main() {
 		++steps;
 		
 		float r_r = X.r/R_s;
-		float dlambda = timestep_scale*r_r*sqrt(r_r)*sin(X.theta)*R_s;
+		float dlambda = timestep_scale*r_r*sqrt(r_r)*abs(sin(X.theta))*R_s;
 		
 		float start_phi = X.phi;
 		
@@ -107,16 +107,33 @@ void main() {
 		X.rdot += Xdot.rdot*dlambda;
 		X.thetadot += Xdot.thetadot*dlambda;
 		X.phidot += Xdot.phidot*dlambda;
+		if (X.phi > 3.14159265358979) {
+			X.phi -= 2.0*3.14159265358979;
+		} else if (X.phi < -3.14159265358979) {
+			X.phi += 2.0*3.14159265358979;
+		}
 		
 		// if path crosses equator, check for collision with accretion disk
 		if (bool(show_accretion_disk) && (sin(start_phi))*(sin(X.phi)) < 0.0 && n_disk_passes < 2 && r_r < accretion_disk_size && r_r > 3.0) {
-			float r_fraction = (r_r - 3.0)/(accretion_disk_size - 3.0);
-			float disk_theta = X.theta;
+			float dlambda_back;
+			float phi_crossing;
+			if (X.phi < 3.1415/2.0 && X.phi > -3.1415/2.0) {
+				phi_crossing = 0.0;
+			} else if (X.phi >= 3.1415/2.0) {
+				phi_crossing = 3.14159265358979;
+			} else {
+				phi_crossing = -3.14159265358979;
+			}
+			dlambda_back = (phi_crossing - X.phi)/X.phidot;
+			float r_r_crossing = (X.r + X.rdot*dlambda_back)/R_s;
+			float theta_crossing = X.theta + X.thetadot*dlambda_back;
+			float r_fraction = (r_r_crossing - 3.0)/(accretion_disk_size - 3.0);
+			float disk_theta = theta_crossing;
 			if (abs(X.phi) < 3.14/2.0) {
 				disk_theta = 2.0*3.14159265 - disk_theta;
 			}
 			float n_rings = 3.0*accretion_disk_size;
-			float ring_level = float(int(((r_r+2.5)/(accretion_disk_size-3.0)*n_rings)));
+			float ring_level = float(int(((r_r_crossing+2.5)/(accretion_disk_size-3.0)*n_rings)));
 			float r_r_ring1 = ring_level*(accretion_disk_size-3.0)/n_rings;
 			float r_r_ring2 = (ring_level+0.5)*(accretion_disk_size-3.0)/n_rings;
 			float frequency1 = accretion_disk_frequency/sqrt(r_r_ring1*r_r_ring1*r_r_ring1/27.0);
@@ -128,6 +145,7 @@ void main() {
 			disk_colors[n_disk_passes] = vec4(rgb_accretion_disk, 1.0*min(disk_density*disk_opacity_multiplier,1.0));
 			disk_emission[n_disk_passes] = rgb_accretion_disk*(disk_density)*disk_brightness_multiplier;
 			++n_disk_passes;
+			
 		}
 		// if path crosses event horizon, exit
 		if (r_r < 1.0) {

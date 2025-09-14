@@ -91,11 +91,17 @@ void GUI::draw(int width, int height, double latitude, double longitude, unsigne
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::Checkbox("rgb", &do_rgb);
 	ImGui::PopStyleVar(1);
+	if (!do_rgb) {
+		ImGui::BeginDisabled();
+	}
 	ImGui::Text("RGB Period (s)");
 	ImGui::SetNextItemWidth(CONTROL_BAR_WIDTH-2*UI_PADDING);
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0,UI_ITEM_SPACING));
 	ImGui::SliderFloat("##7", &rgb_period, 0, MAX_RGB_PERIOD);
 	ImGui::PopStyleVar(1);
+	if (!do_rgb) {
+		ImGui::EndDisabled();
+	}
 	if (!show_accretion_disk) {
 		ImGui::EndDisabled();
 	}
