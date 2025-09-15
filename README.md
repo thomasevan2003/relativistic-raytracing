@@ -103,11 +103,24 @@ The full solution process is as follows:
 4. Convert final 4-velocity from Schwarzschild coordinates to Cartesian coordinates.
 5. Project final 3-velocity onto spherical starmap.
 
-## Dependencies
+## How to Build
+To build this project, the following dependencies are required:
 - Dear ImGui
-- glfw  
-- glad (generated using core gl version 3.3 with loader on)  
+- glfw
+- glad (generated with glad 2 using core gl version 3.3 with loader on)  
 - OpenGL
+
+This project uses cmake as its build system. When building the project, specify IMGUI_DIR, GLFW_DIR, and GLAD_DIR with the location of their respective library directories. These variables can be passed into cmake directly or set as environment variables before configuring.
+
+Example build process:
+```bash
+git clone https://github.com/thomasevan2003/relativistic-raytracing.git
+cd relativistic-raytracing
+mkdir build
+cd build
+cmake .. -DGLFW_DIR="C:\path\to\glfw" -DGLAD_DIR="C:\path\to\glad" -DIMGUI_DIR="C:\path\to\imgui"
+cmake --build .
+```
 
 ## Resources
 The starmap used in this visualization is the Tycho Catalog Skymap Version 2.0, obtained from NASA/Goddard Space Flight Center Scientific Visualization Studio (https://svs.gsfc.nasa.gov/3572).

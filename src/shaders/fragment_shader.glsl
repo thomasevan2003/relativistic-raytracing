@@ -133,7 +133,7 @@ void main() {
 				if (abs(X.phi) < 3.14/2.0) {
 					disk_theta = 2.0*3.14159265 - disk_theta;
 				}
-				float n_rings = 3.0*accretion_disk_size;
+				float n_rings = 4.0*accretion_disk_size;
 				float ring_level = float(int(((r_r_crossing+2.5)/(accretion_disk_size-3.0)*n_rings)));
 				float r_r_ring1 = ring_level*(accretion_disk_size-3.0)/n_rings;
 				float r_r_ring2 = (ring_level+0.5)*(accretion_disk_size-3.0)/n_rings;
