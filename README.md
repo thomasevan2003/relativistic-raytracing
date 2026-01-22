@@ -104,21 +104,18 @@ The full solution process is as follows:
 5. Project final 3-velocity onto spherical starmap.
 
 ## How to Build
-To build this project, the following dependencies are required:
+To implement this project, the following dependencies are used. Relevant licenses for these libraries can be found in [third-party-licenses](third-party-licenses).
 - Dear ImGui
 - glfw
 - glad (generated with glad 2 using core gl version 3.3 with loader on)  
 - OpenGL
 
-This project uses cmake as its build system. When building the project, specify IMGUI_DIR, GLFW_DIR, and GLAD_DIR with the location of their respective library directories. These variables can be passed into cmake directly or set as environment variables before configuring.
-
 Example build process:
 ```bash
-git clone https://github.com/thomasevan2003/relativistic-raytracing.git
+git clone --recurse-submodules https://github.com/thomasevan2003/relativistic-raytracing.git
 cd relativistic-raytracing
 mkdir build
 cd build
-cmake .. -DGLFW_DIR="C:\path\to\glfw" -DGLAD_DIR="C:\path\to\glad" -DIMGUI_DIR="C:\path\to\imgui"
 cmake --build .
 ```
 
