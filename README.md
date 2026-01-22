@@ -116,6 +116,7 @@ git clone --recurse-submodules https://github.com/thomasevan2003/relativistic-ra
 cd relativistic-raytracing
 mkdir build
 cd build
+cmake ..
 cmake --build .
 ```
 
