@@ -1,2 +1,4 @@
 ignore
 build
+third-party/glfw
+third-party/imgui
